@@ -1,0 +1,284 @@
+@function foreground-color($background) {
+	@if (lightness($background) > 40) {
+		@return black;
+	}
+	@else {
+		@return white;
+	}
+}
+
+@mixin hover($backgroundColor) {
+	background-color: $backgroundColor;
+	transition: background-color .125s;
+
+	&:not(.disabled):not(:disabled) {
+		cursor: pointer;
+
+		&:hover {
+			background-color: darken($backgroundColor, 3%);
+		}
+
+		&:active {
+			background-color: darken($backgroundColor, 6%);
+		}
+	}
+}
+@mixin disabled() {
+	&.disabled {
+		opacity: .2;
+	}
+}
+@mixin button($backgroundColor) {
+	color: foreground-color($backgroundColor);
+
+	@include hover($backgroundColor);
+	@include disabled();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.react-date-picker {
+	position: relative;
+
+	[hidden] {
+		display: none !important;
+	}
+
+	button, input[type="submit"], input[type="reset"] {
+		border: none;
+		color: inherit;
+		padding: 0;
+		font: inherit;
+		outline: inherit;
+	}
+
+	.react-date-picker-input {
+		input {
+			width: 100%;
+			box-sizing: border-box;
+		}
+	}
+
+	&.react-date-picker-selector-week {
+		.react-date-picker-week {
+			&:hover {
+				.react-date-picker-day {
+					background-color: darken(#ffffff, 3%);
+					color: foreground-color(darken(#ffffff, 6%));
+				}
+			}
+			&:active {
+				.react-date-picker-day {
+					background-color: darken(#ffffff, 6%);
+					color: foreground-color(darken(#ffffff, 6%));
+				}
+			}
+		}
+	}
+
+	.react-date-picker-overlay {
+		display: flex;
+		flex-direction: column;
+
+		position: absolute;
+		left:0;
+		top: 40px;
+		width: 300px;
+		min-height: 350px;
+		background: #fff;
+		box-shadow: 10px 10px 40px rgba(0,0,0,0.2);
+		border-radius: 20px;
+		overflow: hidden;
+		padding: 25px 30px;
+
+		* {
+			-webkit-touch-callout: none; /* iOS Safari */
+			-webkit-user-select: none;   /* Chrome/Safari/Opera */
+			-khtml-user-select: none;    /* Konqueror */
+			-moz-user-select: none;      /* Firefox */
+			-ms-user-select: none;       /* Internet Explorer/Edge */
+			user-select: none;           /* Non-prefixed version, currently */
+		}
+
+		input {
+			&:focus {
+				outline: none;
+				box-shadow: 0 0 0 2px #1970b3;
+			}
+		}
+	}
+
+	.react-date-picker-button {
+		border: 1px solid darken(#f5f5f5, 2%);
+		display: flex;
+		align-items: center;
+		text-align: center;
+
+		padding: .5rem .8rem;
+		border-radius: .5rem;
+
+		@include hover(#f5f5f5);
+
+		&.react-date-picker-button-icon {
+			padding: 0;
+			border-radius: 999px;
+			width: 2rem;
+			height: 2rem;
+		}
+
+		& > * {
+			display: block;
+			margin: 0 auto;
+		}
+	}
+
+	.react-date-picker-selector {
+		padding: .5rem .8rem;
+		border-radius: .5rem;
+
+		text-align: center;
+
+		@include button(#ffffff);
+	}
+
+	.react-date-picker-head {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: .5rem;
+	}
+
+	.react-date-picker-body {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+
+		.react-date-picker-week-days {
+			display: flex;
+			align-items: center;
+			margin-bottom: .1rem;
+
+			.react-date-picker-week-day {
+				flex: 1;
+				text-align: center;
+				font-weight: bold;
+				font-size: .6rem;
+			}
+		}
+		.react-date-picker-days {
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+
+			.react-date-picker-week {
+				display: flex;
+				justify-content: space-between;
+				flex: 1;
+
+				&.selected {
+					.react-date-picker-day {
+						@include button(#1970b3);
+					}
+				}
+			}
+			.react-date-picker-day {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				flex: 1;
+				margin: .1rem;
+
+				border-radius: .5rem;
+
+				@include button(#ffffff);
+
+				&.today {
+					@include button(#b319a6);
+				}
+				&.selected {
+					@include button(#1970b3);
+				}
+			}
+		}
+
+		.react-date-picker-months {
+			display: flex;
+			flex-wrap: wrap;
+			flex: 1;
+
+			.react-date-picker-month {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				flex-basis: 33%;
+
+				border-radius: .5rem;
+
+				@include button(#ffffff);
+
+				&.today {
+					@include button(#b319a6);
+				}
+				&.selected {
+					@include button(#1970b3);
+				}
+			}
+		}
+
+		.react-date-picker-time {
+			display: flex;
+			flex: 1;
+
+			.react-date-picker-time-hour, .react-date-picker-time-minute {
+				display: flex;
+				flex-direction: column;
+				justify-content: space-around;
+				align-items: center;
+				overflow-y: auto;
+				flex: 1;
+			}
+
+			input {
+				border: none;
+				width: 3rem;
+				height: 3rem;
+				text-align: center;
+				font-size: 1rem;
+
+				&,
+				&::-webkit-outer-spin-button,
+				&::-webkit-inner-spin-button {
+					-webkit-appearance: none;
+					-moz-appearance: textfield;
+					margin: 0;
+				}
+
+				border-radius: .5rem;
+
+				@include hover(#f5f5f5);
+			}
+		}
+	}
+
+	.react-date-picker-footer {
+		text-align: center;
+		margin-top: .5rem;
+
+		.react-date-picker-time-toggle {
+			width: 100%;
+			padding: .5rem;
+
+			@include button(#ffffff);
+		}
+	}
+}
