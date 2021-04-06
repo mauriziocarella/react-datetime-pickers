@@ -5,7 +5,6 @@ import 'react-date-pickers/dist/index.css'
 
 import './App.css'
 
-
 const App = () => {
 	const [selected, setSelected] = React.useState(new Date());
 	const [selector, setSelector] = React.useState("day");

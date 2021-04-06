@@ -7,19 +7,38 @@
 	}
 }
 
-@mixin hover($backgroundColor) {
-	background-color: $backgroundColor;
-	transition: background-color .125s;
+@mixin hover($backgroundColor, $outline: false) {
+	transition: background-color .150s ease-in-out;
 
 	&:not(.disabled):not(:disabled) {
 		cursor: pointer;
+	}
 
-		&:hover {
-			background-color: darken($backgroundColor, 3%);
+	@if ($outline) {
+		color: $primary;
+
+		&:not(.disabled):not(:disabled) {
+			&:hover {
+				background-color: darken($backgroundColor, 3%);
+				color: foreground-color($backgroundColor);
+			}
+
+			&:active {
+				background-color: darken($backgroundColor, 6%);
+			}
 		}
+	}
+	@else {
+		background-color: $backgroundColor;
 
-		&:active {
-			background-color: darken($backgroundColor, 6%);
+		&:not(.disabled):not(:disabled) {
+			&:hover {
+				background-color: darken($backgroundColor, 3%);
+			}
+
+			&:active {
+				background-color: darken($backgroundColor, 6%);
+			}
 		}
 	}
 }
@@ -43,9 +62,8 @@
 
 
 
-
-
-
+$primary: #1970b3;
+$secondary: #b319a6;
 
 .react-date-picker {
 	position: relative;
@@ -96,7 +114,7 @@
 		width: 300px;
 		min-height: 350px;
 		background: #fff;
-		box-shadow: 10px 10px 40px rgba(0,0,0,0.2);
+		box-shadow: 0 0 10px rgba(0,0,0,0.2);
 		border-radius: 20px;
 		overflow: hidden;
 		padding: 25px 30px;
@@ -113,13 +131,13 @@
 		input {
 			&:focus {
 				outline: none;
-				box-shadow: 0 0 0 2px #1970b3;
+				box-shadow: 0 0 0 2px $primary;
 			}
 		}
 	}
 
 	.react-date-picker-button {
-		border: 1px solid darken(#f5f5f5, 2%);
+		border: 1px solid $primary;
 		display: flex;
 		align-items: center;
 		text-align: center;
@@ -127,7 +145,14 @@
 		padding: .5rem .8rem;
 		border-radius: .5rem;
 
-		@include hover(#f5f5f5);
+		&:not(.react-date-picker-button-outline) {
+			@include hover($primary);
+		}
+		&.react-date-picker-button-outline {
+			background-color: transparent;
+
+			@include hover($primary, true);
+		}
 
 		&.react-date-picker-button-icon {
 			padding: 0;
@@ -187,7 +212,7 @@
 
 				&.selected {
 					.react-date-picker-day {
-						@include button(#1970b3);
+						@include button($primary);
 					}
 				}
 			}
@@ -203,10 +228,10 @@
 				@include button(#ffffff);
 
 				&.today {
-					@include button(#b319a6);
+					@include button($secondary);
 				}
 				&.selected {
-					@include button(#1970b3);
+					@include button($primary);
 				}
 			}
 		}
@@ -227,10 +252,10 @@
 				@include button(#ffffff);
 
 				&.today {
-					@include button(#b319a6);
+					@include button($secondary);
 				}
 				&.selected {
-					@include button(#1970b3);
+					@include button($primary);
 				}
 			}
 		}
@@ -278,7 +303,7 @@
 			width: 100%;
 			padding: .5rem;
 
-			@include button(#ffffff);
+			//@include button(#ffffff);
 		}
 	}
 }
