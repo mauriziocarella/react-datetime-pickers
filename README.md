@@ -2,7 +2,7 @@
 
 > React ready picker components for dates and time (month picker, week picker, day picker)
 
-[![NPM](https://img.shields.io/npm/v/react-date-pickers.svg)](https://www.npmjs.com/package/react-date-pickers) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![NPM](https://img.shields.io/npm/v/react-datetime-pickers.svg)](https://www.npmjs.com/package/react-datetime-pickers) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 <img alt="calendar" src="https://raw.githubusercontent.com/mauriziocarella/react-datetime-pickers/master/example/public/images/calendar.png" width="300">
 <img alt="time" src="https://raw.githubusercontent.com/mauriziocarella/react-datetime-pickers/master/example/public/images/time.png" width="300">
