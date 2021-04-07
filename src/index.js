@@ -197,9 +197,13 @@ const TimePicker = ({selected, onChange}) => {
 	}
 
 	React.useEffect(() => {
-		window.addEventListener('mouseup', () => {
-			clearTimers()
-		})
+		const onMouseUp = () => clearTimers();
+
+		document.addEventListener('mouseup', onMouseUp, {capture: true})
+
+		return () => {
+			document.removeEventListener('mouseup', onMouseUp, {capture: true})
+		}
 	}, [])
 
 	return (
@@ -250,6 +254,18 @@ const TimePicker = ({selected, onChange}) => {
 	)
 };
 
+const TimeToggle = (props) => {
+	const {showTimePicker, timeOpen, toggleTime} = props;
+
+	if (!showTimePicker) return null
+
+	return (
+		<button className={classNames("react-date-picker-button react-date-picker-time-toggle react-date-picker-button-outline")} onClick={toggleTime}>
+			{timeOpen ? <IconCalendar/> : <IconClock/>}
+		</button>
+	)
+};
+
 const Calendar = (props) => {
 	const {view, setView, selector, selected, setDate, showTimePicker, firstDayOfWeek} = props;
 	const [timeOpen, setTimeOpen] = React.useState(false);
@@ -259,16 +275,6 @@ const Calendar = (props) => {
 	const toggleTime = React.useCallback(() => setTimeOpen((open) => !open), []);
 
 	const helper = React.useMemo(() => Helper(firstDayOfWeek), [firstDayOfWeek]);
-
-	const TimeToggle = React.useCallback(() => {
-		if (!showTimePicker) return null
-
-		return (
-			<button className={classNames("react-date-picker-button react-date-picker-time-toggle react-date-picker-button-outline")} onClick={toggleTime}>
-				{timeOpen ? <IconCalendar/> : <IconClock/>}
-			</button>
-		)
-	}, [showTimePicker, timeOpen]);
 
 	const handleChange = (offset) => {
 		switch (view) {
@@ -322,7 +328,11 @@ const Calendar = (props) => {
 						/>
 					</div>
 					<div className={classNames("react-date-picker-footer")}>
-						<TimeToggle/>
+						<TimeToggle
+							timeOpen={timeOpen}
+							toggleTime={toggleTime}
+							{...props}
+						/>
 					</div>
 				</React.Fragment>
 			)
@@ -401,7 +411,11 @@ const Calendar = (props) => {
 						</div>
 					</div>
 					<div className={classNames("react-date-picker-footer")}>
-						<TimeToggle/>
+						<TimeToggle
+							timeOpen={timeOpen}
+							toggleTime={toggleTime}
+							{...props}
+						/>
 					</div>
 				</React.Fragment>
 			)
@@ -428,6 +442,7 @@ const Calendar = (props) => {
 
 			const onMonthClick = ({month}) => {
 				setMonth(month)
+				console.log(selector)
 				if (selector === 'month') {
 					let _selected = selected
 					_selected.setMonth(month, 1)
@@ -468,7 +483,11 @@ const Calendar = (props) => {
 						</div>
 					</div>
 					<div className={classNames("react-date-picker-footer")}>
-						<TimeToggle/>
+						<TimeToggle
+							timeOpen={timeOpen}
+							toggleTime={toggleTime}
+							{...props}
+						/>
 					</div>
 				</React.Fragment>
 			)
@@ -538,7 +557,11 @@ const Calendar = (props) => {
 						</div>
 					</div>
 					<div className={classNames("react-date-picker-footer")}>
-						<TimeToggle/>
+						<TimeToggle
+							timeOpen={timeOpen}
+							toggleTime={toggleTime}
+							{...props}
+						/>
 					</div>
 				</React.Fragment>
 			)
@@ -549,7 +572,7 @@ const Calendar = (props) => {
 }
 
 const Container = (props) => {
-	const {selector, firstDayOfWeek, showTimePicker} = props;
+	const {selector} = props;
 
 	const [open, setOpen] = React.useState(false);
 	const [view, setView] = React.useState(selector);
@@ -560,9 +583,6 @@ const Container = (props) => {
 	const input = React.useRef(null);
 
 	const toggleOpen = React.useCallback(() => setOpen((open) => !open), []);
-
-	const handleYearChange = (offset) => setYear((y) => Math.max(y+offset, 0));
-	const handleMonthChange = (offset) => setYear((m) => Math.max(m+offset, 0));
 
 	const setDate = React.useCallback((date) => setSelected(new Date(date)), []);
 
@@ -600,6 +620,19 @@ const Container = (props) => {
 		}
 	}, [selected]);
 
+	React.useEffect(() => {
+		const onClick = (e) => {
+			if (!container.current.contains(e.target)) {
+				setOpen(false)
+			}
+		}
+
+		document.addEventListener('click', onClick, {capture: true})
+
+		return () => {
+			document.removeEventListener('click', onClick, {capture: true})
+		}
+	}, []);
 
 	return (
 		<div

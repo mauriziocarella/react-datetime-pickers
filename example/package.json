@@ -11,7 +11,7 @@
 	},
 	"dependencies": {
 		"react": "file:../node_modules/react",
-		"react-date-pickers": "file:..",
+		"react-datetime-pickers": "file:..",
 		"react-dom": "file:../node_modules/react-dom",
 		"react-scripts": "file:../node_modules/react-scripts"
 	},

@@ -1,9 +1,9 @@
 import React from 'react'
 
-import Picker from 'react-date-pickers'
-import 'react-date-pickers/dist/index.css'
+import DateTimePicker from 'react-datetime-pickers'
+import 'react-datetime-pickers/dist/index.css'
 
-import './App.css'
+import './App.scss'
 
 const App = () => {
 	const [selected, setSelected] = React.useState(new Date());
@@ -42,24 +42,15 @@ const App = () => {
 				/>
 			</div>
 			<div>
-				<Picker
+				<DateTimePicker
 					selected={selected}
 					selector={selector}
 					showTimePicker={showTimePicker}
 					onChange={handleDateChange}
-				>
-					<input type={"text"}/>
-				</Picker>
+				/>
 			</div>
 
-			<pre
-				style={{
-					position: 'absolute',
-					top: 0,
-					right: 0,
-					margin: 16,
-				}}
-			>
+			<pre>
 				{logs.join("\n")}
 			</pre>
 		</>
