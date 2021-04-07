@@ -50,7 +50,7 @@ const App = () => {
 				/>
 			</div>
 
-			<pre>
+			<pre style={{display: 'none'}}>
 				{logs.join("\n")}
 			</pre>
 		</>
