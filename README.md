@@ -4,8 +4,8 @@
 
 [![NPM](https://img.shields.io/npm/v/react-date-pickers.svg)](https://www.npmjs.com/package/react-date-pickers) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-![calendar](https://raw.githubusercontent.com/mauriziocarella/react-datetime-pickers/master/example/public/images/screenshot.png =250x)
-![time](https://raw.githubusercontent.com/mauriziocarella/react-datetime-pickers/master/example/public/images/time.png =250x)
+<img alt="calendar" src="https://raw.githubusercontent.com/mauriziocarella/react-datetime-pickers/master/example/public/images/calendar.png" width="300">
+<img alt="time" src="https://raw.githubusercontent.com/mauriziocarella/react-datetime-pickers/master/example/public/images/time.png" width="300">
 
 ## Install
 
