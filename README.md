@@ -10,11 +10,11 @@
 ## Install
 
 ```bash
-npm install --save react-date-pickers
+npm install --save react-datetime-pickers
 ```
 or
 ```bash
-yarn install react-date-pickers
+yarn install react-datetime-pickers
 ```
 
 ## Usage
