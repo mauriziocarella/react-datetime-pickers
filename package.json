@@ -1,6 +1,6 @@
 {
 	"name": "react-datetime-pickers",
-	"version": "1.0.2",
+	"version": "1.0.15",
 	"description": "React ready picker components for dates and time (month picker, week picker, day picker)",
 	"keywords": [
 		"react",
@@ -19,7 +19,7 @@
 		"node": ">=10"
 	},
 	"scripts": {
-		"build": "microbundle-crl --no-compress --format cjs",
+		"build": "microbundle-crl --no-compress --format cjs --css-modules false",
 		"start": "microbundle-crl watch --no-compress --format cjs --css-modules false",
 		"prepare": "run-s build",
 		"test": "run-s test:unit test:lint test:build",
@@ -28,11 +28,12 @@
 		"test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
 		"test:watch": "react-scripts test --env=jsdom",
 		"predeploy": "cd example && npm install && npm run build",
-		"deploy": "gh-pages -d example/build"
+		"deploy": "gh-pages -d example/build",
+		"prepublish": "npm run build"
 	},
 	"peerDependencies": {
-		"react": "^17.0.2",
-		"react-dom": "^17.0.2"
+		"react": "^16.0.0",
+		"react-dom": "^16.0.0"
 	},
 	"devDependencies": {
 		"babel-eslint": "^10.0.3",

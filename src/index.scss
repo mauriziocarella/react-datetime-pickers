@@ -8,7 +8,7 @@
 }
 
 @mixin hover($backgroundColor, $outline: false) {
-	transition: background-color .150s ease-in-out;
+	transition: background-color .1s ease-in-out;
 
 	&:not(.disabled):not(:disabled) {
 		cursor: pointer;
@@ -66,7 +66,7 @@
 $primary: #1970b3;
 $secondary: #b319a6;
 
-.react-date-picker {
+.react-datetime-pickers {
 	position: relative;
 
 	[hidden] {
@@ -81,23 +81,21 @@ $secondary: #b319a6;
 		outline: inherit;
 	}
 
-	.react-date-picker-input {
-		input {
-			width: 100%;
-			box-sizing: border-box;
-		}
+	.react-datetime-pickers-input {
+		width: 100%;
+		box-sizing: border-box;
 	}
 
-	&.react-date-picker-selector-week {
-		.react-date-picker-week {
+	&.react-datetime-pickers-selector-week {
+		.react-datetime-pickers-week {
 			&:hover {
-				.react-date-picker-day {
+				.react-datetime-pickers-day {
 					background-color: darken(#ffffff, 3%);
 					color: foreground-color(darken(#ffffff, 6%));
 				}
 			}
 			&:active {
-				.react-date-picker-day {
+				.react-datetime-pickers-day {
 					background-color: darken(#ffffff, 6%);
 					color: foreground-color(darken(#ffffff, 6%));
 				}
@@ -105,7 +103,7 @@ $secondary: #b319a6;
 		}
 	}
 
-	.react-date-picker-overlay {
+	.react-datetime-pickers-overlay {
 		display: flex;
 		flex-direction: column;
 
@@ -136,7 +134,7 @@ $secondary: #b319a6;
 		}
 	}
 
-	.react-date-picker-button {
+	.react-datetime-pickers-button {
 		border: 1px solid $primary;
 		display: flex;
 		align-items: center;
@@ -145,16 +143,16 @@ $secondary: #b319a6;
 		padding: .5rem .8rem;
 		border-radius: .5rem;
 
-		&:not(.react-date-picker-button-outline) {
+		&:not(.react-datetime-pickers-button-outline) {
 			@include hover($primary);
 		}
-		&.react-date-picker-button-outline {
+		&.react-datetime-pickers-button-outline {
 			background-color: transparent;
 
 			@include hover($primary, true);
 		}
 
-		&.react-date-picker-button-icon {
+		&.react-datetime-pickers-button-icon {
 			padding: 0;
 			border-radius: 999px;
 			width: 2rem;
@@ -167,7 +165,7 @@ $secondary: #b319a6;
 		}
 	}
 
-	.react-date-picker-selector {
+	.react-datetime-pickers-selector {
 		padding: .5rem .8rem;
 		border-radius: .5rem;
 
@@ -176,47 +174,47 @@ $secondary: #b319a6;
 		@include button(#ffffff);
 	}
 
-	.react-date-picker-head {
+	.react-datetime-pickers-head {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		margin-bottom: .5rem;
 	}
 
-	.react-date-picker-body {
+	.react-datetime-pickers-body {
 		flex: 1;
 		display: flex;
 		flex-direction: column;
 
-		.react-date-picker-week-days {
+		.react-datetime-pickers-week-days {
 			display: flex;
 			align-items: center;
 			margin-bottom: .1rem;
 
-			.react-date-picker-week-day {
+			.react-datetime-pickers-week-day {
 				flex: 1;
 				text-align: center;
 				font-weight: bold;
 				font-size: .6rem;
 			}
 		}
-		.react-date-picker-days {
+		.react-datetime-pickers-days {
 			display: flex;
 			flex-direction: column;
 			flex: 1;
 
-			.react-date-picker-week {
+			.react-datetime-pickers-week {
 				display: flex;
 				justify-content: space-between;
 				flex: 1;
 
 				&.selected {
-					.react-date-picker-day {
+					.react-datetime-pickers-day {
 						@include button($primary);
 					}
 				}
 			}
-			.react-date-picker-day {
+			.react-datetime-pickers-day {
 				display: flex;
 				align-items: center;
 				justify-content: center;
@@ -236,12 +234,12 @@ $secondary: #b319a6;
 			}
 		}
 
-		.react-date-picker-months {
+		.react-datetime-pickers-months {
 			display: flex;
 			flex-wrap: wrap;
 			flex: 1;
 
-			.react-date-picker-month {
+			.react-datetime-pickers-month {
 				display: flex;
 				align-items: center;
 				justify-content: center;
@@ -260,11 +258,11 @@ $secondary: #b319a6;
 			}
 		}
 
-		.react-date-picker-time {
+		.react-datetime-pickers-time {
 			display: flex;
 			flex: 1;
 
-			.react-date-picker-time-hour, .react-date-picker-time-minute {
+			.react-datetime-pickers-time-hour, .react-datetime-pickers-time-minute {
 				display: flex;
 				flex-direction: column;
 				justify-content: space-around;
@@ -295,11 +293,11 @@ $secondary: #b319a6;
 		}
 	}
 
-	.react-date-picker-footer {
+	.react-datetime-pickers-footer {
 		text-align: center;
 		margin-top: .5rem;
 
-		.react-date-picker-time-toggle {
+		.react-datetime-pickers-time-toggle {
 			width: 100%;
 			padding: .5rem;
 

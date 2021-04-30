@@ -7,7 +7,7 @@ import './App.scss'
 
 const App = () => {
 	const [selected, setSelected] = React.useState(new Date());
-	const [selector, setSelector] = React.useState("day");
+	const [selector, setSelector] = React.useState("month");
 	const [showTimePicker, setShowTimePicker] = React.useState(true);
 	const [logs, setLogs] = React.useState([]);
 
@@ -22,6 +22,9 @@ const App = () => {
 	const handleShowTimePickerChange = React.useCallback((e) => {
 		setShowTimePicker(!!e.target.checked);
 	}, []);
+
+	const minDate = new Date(2018, 2, 20);
+	const maxDate = new Date(2021, 5, 15);
 
 	return (
 		<>
@@ -47,6 +50,8 @@ const App = () => {
 					selector={selector}
 					showTimePicker={showTimePicker}
 					onChange={handleDateChange}
+					maxDate={maxDate}
+					minDate={minDate}
 				/>
 			</div>
 

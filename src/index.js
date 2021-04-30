@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import { IconArrowDown, IconArrowLeft, IconArrowRight, IconArrowUp, IconCalendar, IconClock } from './icons'
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
 
 import './index.scss'
 
@@ -93,11 +93,6 @@ const Helper = function(firstDayOfWeek) {
 				a.getFullYear() === b.getFullYear()
 			)
 		},
-		monthStart(date) {
-			let ret = new Date(date)
-			ret.setDate(1)
-			return ret
-		},
 		weekStart(date) {
 			let ret = new Date(date)
 			ret.setDate(date.getDate() - date.getDay() + firstDayOfWeek)
@@ -108,6 +103,20 @@ const Helper = function(firstDayOfWeek) {
 			ret.setDate(ret.getDate() + 6)
 			ret.setHours(23, 59, 59, 999)
 			return ret
+		},
+		monthStart(date) {
+			let ret = new Date(date)
+			ret.setDate(1)
+			return ret
+		},
+		monthEnd(date) {
+			return new Date(date.getFullYear(), date.getMonth() + 1, 0)
+		},
+		yearStart(date) {
+			return new Date(date.getFullYear(), 0, 1)
+		},
+		yearEnd(date) {
+			return new Date(date.getFullYear(), 11, 31)
 		},
 
 		getMonthWeeks(year, month) {
@@ -207,10 +216,10 @@ const TimePicker = ({selected, onChange}) => {
 	}, [])
 
 	return (
-		<div className={classNames("react-date-picker-time")}>
-			<div className={classNames("react-date-picker-time-hour")}>
+		<div className={classNames("react-datetime-pickers-time")}>
+			<div className={classNames("react-datetime-pickers-time-hour")}>
 				<button
-					className={classNames("react-date-picker-button react-date-picker-button-outline react-date-picker-button-icon")}
+					className={classNames("react-datetime-pickers-button react-datetime-pickers-button-outline react-datetime-pickers-button-icon")}
 					onClick={() => addHour(1)}
 					onMouseDown={() => startAddHour(1)}
 				>
@@ -222,16 +231,16 @@ const TimePicker = ({selected, onChange}) => {
 					onChange={handleHourChange}
 				/>
 				<button
-					className={classNames("react-date-picker-button react-date-picker-button-outline react-date-picker-button-icon")}
+					className={classNames("react-datetime-pickers-button react-datetime-pickers-button-outline react-datetime-pickers-button-icon")}
 					onClick={() => addHour(-1)}
 					onMouseDown={() => startAddHour(-1)}
 				>
 					<IconArrowDown/>
 				</button>
 			</div>
-			<div className={classNames("react-date-picker-time-minute")}>
+			<div className={classNames("react-datetime-pickers-time-minute")}>
 				<button
-					className={classNames("react-date-picker-button react-date-picker-button-outline react-date-picker-button-icon")}
+					className={classNames("react-datetime-pickers-button react-datetime-pickers-button-outline react-datetime-pickers-button-icon")}
 					onClick={() => addMinute(1)}
 					onMouseDown={() => startAddMinute(1)}
 				>
@@ -243,7 +252,7 @@ const TimePicker = ({selected, onChange}) => {
 					onChange={handleMinuteChange}
 				/>
 				<button
-					className={classNames("react-date-picker-button react-date-picker-button-outline react-date-picker-button-icon")}
+					className={classNames("react-datetime-pickers-button react-datetime-pickers-button-outline react-datetime-pickers-button-icon")}
 					onClick={() => addMinute(-1)}
 					onMouseDown={() => startAddMinute(-1)}
 				>
@@ -260,14 +269,14 @@ const TimeToggle = (props) => {
 	if (!showTimePicker) return null
 
 	return (
-		<button className={classNames("react-date-picker-button react-date-picker-time-toggle react-date-picker-button-outline")} onClick={toggleTime}>
+		<button className={classNames("react-datetime-pickers-button react-datetime-pickers-time-toggle react-datetime-pickers-button-outline")} onClick={toggleTime}>
 			{timeOpen ? <IconCalendar/> : <IconClock/>}
 		</button>
 	)
 };
 
 const Calendar = (props) => {
-	const {view, setView, selector, selected, setDate, showTimePicker, firstDayOfWeek} = props;
+	const {view, setView, selector, selected, setDate, minDate, maxDate, showTimePicker, firstDayOfWeek} = props;
 	const [timeOpen, setTimeOpen] = React.useState(false);
 	const [year, setYear] = React.useState(selected.getFullYear());
 	const [month, setMonth] = React.useState(selected.getMonth());
@@ -278,6 +287,7 @@ const Calendar = (props) => {
 
 	const handleChange = (offset) => {
 		switch (view) {
+			case 'week':
 			case 'day': {
 				let _month = month
 				let _year = year
@@ -321,13 +331,13 @@ const Calendar = (props) => {
 		case 'time': {
 			return (
 				<React.Fragment>
-					<div className={classNames("react-date-picker-body")}>
+					<div className={classNames("react-datetime-pickers-body")}>
 						<TimePicker
 							selected={selected}
 							onChange={setDate}
 						/>
 					</div>
-					<div className={classNames("react-date-picker-footer")}>
+					<div className={classNames("react-datetime-pickers-footer")}>
 						<TimeToggle
 							timeOpen={timeOpen}
 							toggleTime={toggleTime}
@@ -338,10 +348,24 @@ const Calendar = (props) => {
 			)
 		}
 
+		case 'week':
 		case 'day': {
 			if (selector !== 'day' && selector !== 'week') return null
 
-			const weeks = helper.getMonthWeeks(year, month)
+			const weeks = helper.getMonthWeeks(year, month).map((week) => {
+				week.days.map((day) => {
+					if (minDate && day.date < minDate) {
+						day.disabled = true
+					}
+					if (maxDate && day.date > maxDate) {
+						day.disabled = true
+					}
+
+					return day
+				});
+
+				return week
+			});
 
 			const isSelectedDay = ({date}) => {
 				if (selected) {
@@ -372,29 +396,29 @@ const Calendar = (props) => {
 
 			return (
 				<React.Fragment>
-					<div className={classNames("react-date-picker-head")}>
-						<div className={classNames("react-date-picker-button react-date-picker-button-outline react-date-picker-button-icon")} onClick={handlePrevious}>
+					<div className={classNames("react-datetime-pickers-head")}>
+						<div className={classNames("react-datetime-pickers-button react-datetime-pickers-button-outline react-datetime-pickers-button-icon")} onClick={handlePrevious}>
 							<IconArrowLeft/>
 						</div>
-						<div className={classNames("react-date-picker-selector")} onClick={() => setView('month')}>
+						<div className={classNames("react-datetime-pickers-selector")} onClick={() => setView('month')}>
 							{month + 1}/{year}
 						</div>
-						<div className={classNames("react-date-picker-button react-date-picker-button-outline react-date-picker-button-icon")} onClick={handleNext}>
+						<div className={classNames("react-datetime-pickers-button react-datetime-pickers-button-outline react-datetime-pickers-button-icon")} onClick={handleNext}>
 							<IconArrowRight/>
 						</div>
 					</div>
-					<div className={classNames("react-date-picker-body")}>
-						<div className={classNames("react-date-picker-week-days")}>
-							{helper.dows.map((d, i) => <div key={i} className={classNames("react-date-picker-week-day")}>{d}</div>)}
+					<div className={classNames("react-datetime-pickers-body")}>
+						<div className={classNames("react-datetime-pickers-week-days")}>
+							{helper.dows.map((d, i) => <div key={i} className={classNames("react-datetime-pickers-week-day")}>{d}</div>)}
 						</div>
-						<div className={classNames("react-date-picker-days")}>
+						<div className={classNames("react-datetime-pickers-days")}>
 							{weeks.map((week, index) => (
-								<div key={index} className={classNames("react-date-picker-week", {
+								<div key={index} className={classNames("react-datetime-pickers-week", {
 									selected: selector === 'week' && isSelectedDay(week.days[0])
 								})}>
 									{week.days.map((day, index) => (
 										<button
-											className={classNames("react-date-picker-day", {
+											className={classNames("react-datetime-pickers-day", {
 												disabled: day.disabled,
 												selected: isSelectedDay(day),
 												today: isTodayDay(day)
@@ -410,7 +434,7 @@ const Calendar = (props) => {
 							))}
 						</div>
 					</div>
-					<div className={classNames("react-date-picker-footer")}>
+					<div className={classNames("react-datetime-pickers-footer")}>
 						<TimeToggle
 							timeOpen={timeOpen}
 							toggleTime={toggleTime}
@@ -422,10 +446,18 @@ const Calendar = (props) => {
 		}
 
 		case 'month': {
-			const months = helper.months.map((month, index) => ({
-				...month,
-				date: new Date(year, month.month, 1)
-			}))
+			const months = helper.months.map((month, index) => {
+				month.date = new Date(year, month.month, 1);
+
+				if (minDate && helper.monthEnd(month.date) < minDate) {
+					month.disabled = true
+				}
+				if (maxDate && month.date > maxDate) {
+					month.disabled = true
+				}
+
+				return month;
+			})
 
 			const isSelectedMonth = ({date}) => {
 				if (selected) {
@@ -442,7 +474,6 @@ const Calendar = (props) => {
 
 			const onMonthClick = ({month}) => {
 				setMonth(month)
-				console.log(selector)
 				if (selector === 'month') {
 					let _selected = selected
 					_selected.setMonth(month, 1)
@@ -454,35 +485,36 @@ const Calendar = (props) => {
 
 			return (
 				<React.Fragment>
-					<div className={classNames("react-date-picker-head")}>
-						<div className={classNames("react-date-picker-button react-date-picker-button-outline react-date-picker-button-icon")} onClick={handlePrevious}>
+					<div className={classNames("react-datetime-pickers-head")}>
+						<div className={classNames("react-datetime-pickers-button react-datetime-pickers-button-outline react-datetime-pickers-button-icon")} onClick={handlePrevious}>
 							<IconArrowLeft/>
 						</div>
-						<div className={classNames("react-date-picker-selector")} onClick={() => setView('year')}>
+						<div className={classNames("react-datetime-pickers-selector")} onClick={() => setView('year')}>
 							{year}
 						</div>
-						<div className={classNames("react-date-picker-button react-date-picker-button-outline react-date-picker-button-icon")} onClick={handleNext}>
+						<div className={classNames("react-datetime-pickers-button react-datetime-pickers-button-outline react-datetime-pickers-button-icon")} onClick={handleNext}>
 							<IconArrowRight/>
 						</div>
 					</div>
-					<div className={classNames("react-date-picker-body")}>
-						<div className={classNames("react-date-picker-months")}>
+					<div className={classNames("react-datetime-pickers-body")}>
+						<div className={classNames("react-datetime-pickers-months")}>
 							{months.map((month, index) => (
 								<button
-									className={classNames("react-date-picker-month", {
+									className={classNames("react-datetime-pickers-month", {
 										disabled: month.disabled,
 										selected: isSelectedMonth(month),
 										today: isTodayMonth(month)
 									})}
 									key={index}
 									onClick={() => onMonthClick(month)}
+									disabled={month.disabled}
 								>
 									{month.name}
 								</button>
 							))}
 						</div>
 					</div>
-					<div className={classNames("react-date-picker-footer")}>
+					<div className={classNames("react-datetime-pickers-footer")}>
 						<TimeToggle
 							timeOpen={timeOpen}
 							toggleTime={toggleTime}
@@ -496,10 +528,19 @@ const Calendar = (props) => {
 		case 'year': {
 			const years = []
 			for (let i = year - 7; i <= year + 7; i++) {
-				years.push({
+				const year = {
 					year: i,
 					date: new Date(i, 0, 1)
-				})
+				};
+
+				if (minDate && helper.yearEnd(year.date) < minDate) {
+					year.disabled = true
+				}
+				if (maxDate && year.date > maxDate) {
+					year.disabled = true
+				}
+
+				years.push(year)
 			}
 
 			const isSelectedYear = ({date}) => {
@@ -528,35 +569,36 @@ const Calendar = (props) => {
 
 			return (
 				<React.Fragment>
-					<div className={classNames("react-date-picker-head")}>
-						<div className={classNames("react-date-picker-button react-date-picker-button-outline react-date-picker-button-icon")} onClick={handlePrevious}>
+					<div className={classNames("react-datetime-pickers-head")}>
+						<div className={classNames("react-datetime-pickers-button react-datetime-pickers-button-outline react-datetime-pickers-button-icon")} onClick={handlePrevious}>
 							<IconArrowLeft/>
 						</div>
-						<div className={classNames("react-date-picker-selector")} onClick={() => setView('year')}>
+						<div className={classNames("react-datetime-pickers-selector")} onClick={() => setView('year')}>
 							{year}
 						</div>
-						<div className={classNames("react-date-picker-button react-date-picker-button-outline react-date-picker-button-icon")} onClick={handleNext}>
+						<div className={classNames("react-datetime-pickers-button react-datetime-pickers-button-outline react-datetime-pickers-button-icon")} onClick={handleNext}>
 							<IconArrowRight/>
 						</div>
 					</div>
-					<div className={classNames("react-date-picker-body")}>
-						<div className={classNames("react-date-picker-months")}>
+					<div className={classNames("react-datetime-pickers-body")}>
+						<div className={classNames("react-datetime-pickers-months")}>
 							{years.map((year, index) => (
 								<button
-									className={classNames("react-date-picker-month", {
-										// disabled: year.disabled,
+									className={classNames("react-datetime-pickers-month", {
+										disabled: year.disabled,
 										selected: isSelectedYear(year),
 										today: isTodayYear(year)
 									})}
 									key={index}
 									onClick={() => onYearClick(year)}
+									disabled={year.disabled}
 								>
 									{year.year}
 								</button>
 							))}
 						</div>
 					</div>
-					<div className={classNames("react-date-picker-footer")}>
+					<div className={classNames("react-datetime-pickers-footer")}>
 						<TimeToggle
 							timeOpen={timeOpen}
 							toggleTime={toggleTime}
@@ -572,7 +614,7 @@ const Calendar = (props) => {
 }
 
 const Container = (props) => {
-	const {selector} = props;
+	const {selector, minDate, maxDate} = props;
 
 	const [open, setOpen] = React.useState(false);
 	const [view, setView] = React.useState(selector);
@@ -584,12 +626,21 @@ const Container = (props) => {
 
 	const toggleOpen = React.useCallback(() => setOpen((open) => !open), []);
 
-	const setDate = React.useCallback((date) => setSelected(new Date(date)), []);
+	const setDate = React.useCallback((date) => {
+		let d = new Date(date);
 
-	const Input = React.useCallback(() => {
+		if (d < minDate) d = minDate;
+		if (d > maxDate) d = maxDate;
+
+		setSelected(d);
+	}, [minDate, maxDate]);
+
+	const Input = React.useCallback(({onClick}) => {
 		if (React.isValidElement(props.children)) {
 			return React.cloneElement(props.children, {
-				ref: input
+				ref: input,
+				className: classNames(props.children.props.className, "react-datetime-pickers-input"),
+				onClick,
 			})
 		}
 
@@ -597,18 +648,22 @@ const Container = (props) => {
 			<input
 				ref={input}
 				type="text"
+				className="react-datetime-pickers-input"
+				onClick={onClick}
 			/>
 		);
 	}, []);
 
-	React.useEffect(() => {
+	useDidMountEffect(() => {
 		if (typeof props.onChange === "function") {
 			props.onChange(selected)
 		}
+	}, [selected])
 
+	React.useEffect(() => {
 		if (input.current) {
 			const formatter = (date) => {
-				if (typeof props.inputFormatter === 'function') return props.inputFormatter(date)
+				if (typeof props.formatter === 'function') return props.formatter(date)
 
 				let value = date.toLocaleDateString()
 				if (props.showTimePicker) value = date.toLocaleString()
@@ -618,7 +673,11 @@ const Container = (props) => {
 
 			input.current.value = formatter(selected)
 		}
-	}, [selected]);
+
+		if (props.closeOnSelect) {
+			setOpen(false);
+		}
+	}, [selected, view])
 
 	React.useEffect(() => {
 		const onClick = (e) => {
@@ -634,17 +693,17 @@ const Container = (props) => {
 		}
 	}, []);
 
+	React.useEffect(() => setView(selector), [selector]);
+
 	return (
 		<div
 			ref={container}
-			className={classNames("react-date-picker", `react-date-picker-selector-${selector}`)}
+			className={classNames("react-datetime-pickers", `react-datetime-pickers-selector-${selector}`)}
 		>
-			<div className={classNames("react-date-picker-input")} onClick={toggleOpen}>
-				<Input/>
-			</div>
+			<Input onClick={toggleOpen}/>
 			<div
 				ref={overlay}
-				className={classNames("react-date-picker-overlay", `react-date-picker-mode-${view}`)}
+				className={classNames("react-datetime-pickers-overlay", `react-datetime-pickers-mode-${view}`)}
 				hidden={!open}
 			>
 				<Calendar
@@ -664,10 +723,11 @@ Container.defaultProps = {
 	selector: 'month',
 	firstDayOfWeek: 1,
 	showTimePicker: false,
+	closeOnSelect: true,
 };
 
 Container.propTypes = {
-	inputFormatter: PropTypes.func,
+	formatter: PropTypes.func,
 	onChange: PropTypes.func,
 }
 
