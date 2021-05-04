@@ -185,6 +185,7 @@ $secondary: #b319a6;
 		flex: 1;
 		display: flex;
 		flex-direction: column;
+		position: relative;
 
 		.react-datetime-pickers-week-days {
 			display: flex;
@@ -258,9 +259,55 @@ $secondary: #b319a6;
 			}
 		}
 
-		.react-datetime-pickers-time {
+		.react-datetime-pickers-years {
 			display: flex;
+			flex-wrap: wrap;
 			flex: 1;
+
+			.react-datetime-pickers-year {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				flex-basis: 33%;
+
+
+
+				@include button(#ffffff);
+
+				&.today {
+					@include button($secondary);
+				}
+				&.selected {
+					@include button($primary);
+				}
+			}
+		}
+
+		.react-datetime-pickers-times {
+			display: flex;
+			flex-wrap: wrap;
+			flex: 1;
+			overflow-y: auto;
+
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+
+			.react-datetime-pickers-time {
+				flex-basis: 25%;
+				padding-top: .5rem;
+				padding-bottom: .5rem;
+
+				border-radius: .5rem;
+
+				@include button(#ffffff);
+
+				&.selected {
+					@include button($primary);
+				}
+			}
 
 			.react-datetime-pickers-time-hour, .react-datetime-pickers-time-minute {
 				display: flex;

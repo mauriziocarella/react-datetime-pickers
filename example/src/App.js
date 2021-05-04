@@ -7,11 +7,12 @@ import './App.scss'
 
 const App = () => {
 	const [selected, setSelected] = React.useState(new Date());
-	const [selector, setSelector] = React.useState("month");
+	const [selector, setSelector] = React.useState("day");
 	const [showTimePicker, setShowTimePicker] = React.useState(true);
 	const [logs, setLogs] = React.useState([]);
 
 	const handleDateChange = React.useCallback((date) => {
+		console.debug('DatePicker', 'onChange', date);
 		setSelected(date);
 		setLogs((logs) => [`Date changed: ${date.toLocaleString()}`, ...logs])
 	}, []);
@@ -48,7 +49,7 @@ const App = () => {
 				<DateTimePicker
 					selected={selected}
 					selector={selector}
-					showTimePicker={showTimePicker}
+					timePicker={showTimePicker}
 					onChange={handleDateChange}
 					maxDate={maxDate}
 					minDate={minDate}
