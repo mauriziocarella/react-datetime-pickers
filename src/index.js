@@ -102,6 +102,17 @@ const Helper = function(firstDayOfWeek) {
 			)
 		},
 
+		dayStart(date) {
+			let ret = new Date(date)
+			ret.setHours(0, 0, 0, 0)
+			return ret
+		},
+		dayEnd(date) {
+			let ret = new Date(date)
+			ret.setHours(23, 59, 59, 999)
+			return ret
+		},
+
 		weekStart(date) {
 			let ret = new Date(date)
 			ret.setDate(date.getDate() - date.getDay() + firstDayOfWeek)
@@ -209,7 +220,7 @@ const TimePicker = ({selected, onChange, helper}) => {
 	)
 }
 
-const TimePicker2 = ({selected, onChange}) => {
+const TimePickerScroller = ({selected, onChange}) => {
 	const timeout = React.useRef(null);
 	const interval = React.useRef(null);
 
@@ -417,10 +428,11 @@ const Calendar = (props) => {
 
 			const weeks = helper.getMonthWeeks(year, month).map((week) => {
 				week.days.map((day) => {
-					if (minDate && day.date < minDate) {
+					if (minDate && day.date < helper.dayStart(minDate)) {
 						day.disabled = true
 					}
-					if (maxDate && day.date > maxDate) {
+
+					if (maxDate && day.date > helper.dayEnd(maxDate)) {
 						day.disabled = true
 					}
 
