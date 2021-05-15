@@ -428,6 +428,8 @@ const Calendar = (props) => {
 
 			const weeks = helper.getMonthWeeks(year, month).map((week) => {
 				week.days.map((day) => {
+					day.disabled = false;
+
 					if (minDate && day.date < helper.dayStart(minDate)) {
 						day.disabled = true
 					}
@@ -524,6 +526,7 @@ const Calendar = (props) => {
 		case 'month': {
 			const months = helper.months.map((month, index) => {
 				month.date = new Date(year, month.month, 1);
+				month.disabled = false;
 
 				if (minDate && helper.monthEnd(month.date) < minDate) {
 					month.disabled = true
@@ -608,7 +611,8 @@ const Calendar = (props) => {
 			for (let i = year - 7; i <= year + 7; i++) {
 				const year = {
 					year: i,
-					date: new Date(i, 0, 1)
+					date: new Date(i, 0, 1),
+					disabled: false,
 				};
 
 				if (minDate && helper.yearEnd(year.date) < minDate) {
