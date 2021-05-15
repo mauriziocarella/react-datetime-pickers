@@ -553,6 +553,7 @@ const Calendar = (props) => {
 				if (selector === 'month') {
 					let _selected = selected
 					_selected.setMonth(month, 1)
+					_selected.setYear(year)
 					setDate(_selected)
 				} else {
 					setView('day')
