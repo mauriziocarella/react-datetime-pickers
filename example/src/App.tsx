@@ -1,15 +1,15 @@
 import React from 'react'
 
-import DateTimePicker from 'react-datetime-pickers'
+import DateTimePicker, {DateTimePickerSelectorType} from 'react-datetime-pickers'
 import 'react-datetime-pickers/dist/index.css'
 
 import './App.scss'
 
 const App = () => {
 	const [selected, setSelected] = React.useState(new Date());
-	const [selector, setSelector] = React.useState("day");
+	const [selector, setSelector] = React.useState<DateTimePickerSelectorType>("day");
 	const [showTimePicker, setShowTimePicker] = React.useState(true);
-	const [logs, setLogs] = React.useState([]);
+	const [logs, setLogs] = React.useState<string[]>([]);
 
 	const handleDateChange = React.useCallback((date) => {
 		console.debug('DatePicker', 'onChange', date);
@@ -25,7 +25,7 @@ const App = () => {
 	}, []);
 
 	const minDate = new Date(2018, 2, 20);
-	const maxDate = new Date(2021, 5, 15);
+	const maxDate = new Date(2021, 10, 15);
 
 	return (
 		<>
