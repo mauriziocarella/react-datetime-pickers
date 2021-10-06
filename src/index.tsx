@@ -21,12 +21,12 @@ export interface DateTimePickerProps {
 }
 
 const Container: React.FC<DateTimePickerProps> = (props) => {
-    const {selector, minDate, maxDate, timePicker} = props;
+    const {selector, minDate, maxDate, timePicker, selected: _selected} = props;
 
     const [open, setOpen] = useState(false);
     const [view, setView] = useState(selector);
     const [timeOpen, setTimeOpen] = useState(false);
-    const [selected, setSelected] = useState(props.selected || new Date());
+    const [selected, setSelected] = useState(_selected || new Date());
 
     const container = useRef<HTMLDivElement>(null);
     const overlay = useRef(null);
@@ -110,6 +110,14 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
     }, []);
 
     useEffect(() => setView(selector), [selector]);
+
+    useEffect(() => {
+        if (_selected) {
+            if (_selected.getTime() !== selected.getTime()) {
+                setSelected(_selected)
+            }
+        }
+    }, [_selected])
 
     return (
         <div
