@@ -19,6 +19,12 @@ export interface DateTimePickerProps {
     firstDayOfWeek?: number,
     closeOnSelect?: boolean,
 }
+const defaultProps: DateTimePickerProps = {
+    selector: 'day',
+    timePicker: false,
+    firstDayOfWeek: 1,
+    closeOnSelect: true,
+}
 
 const Container: React.FC<DateTimePickerProps> = (props) => {
     const {selector, minDate, maxDate, timePicker, selected: _selected} = props;
@@ -145,12 +151,6 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
         </div>
     )
 }
-const defaultProps: DateTimePickerProps = {
-    selector: 'day',
-    timePicker: false,
-    firstDayOfWeek: 1,
-    closeOnSelect: true,
-}
-
 Container.defaultProps = defaultProps;
+
 export default Container

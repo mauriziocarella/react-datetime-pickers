@@ -332,12 +332,14 @@ const Calendar: React.FC<CalendarProps> = (props) => {
             const onYearClick = ({year}: { year: number }) => {
                 setYear(year)
 
-                //TODO Check if is year picker
-                // let selected = this.state.selected;
-                // selected.setFullYear(year);
-                // this.setState({selected: new Date(selected)})
-
-                setView('month')
+                if (selector === 'year') {
+                    let _selected = selected
+                    _selected.setMonth(0, 1)
+                    _selected.setFullYear(year)
+                    setDate(_selected)
+                } else {
+                    setView('month')
+                }
             };
 
             return (

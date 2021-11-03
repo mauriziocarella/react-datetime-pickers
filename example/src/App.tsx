@@ -32,9 +32,10 @@ const App = () => {
 			<div>
 				<label>Selector</label>
 				<select onChange={handleSelectorChange} value={selector}>
-					<option value={"day"}>Day</option>
-					<option value={"week"}>Week</option>
-					<option value={"month"}>Month</option>
+					<option value="day">Day</option>
+					<option value="week">Week</option>
+					<option value="month">Month</option>
+					<option value="year">Year</option>
 				</select>
 			</div>
 			<div>
