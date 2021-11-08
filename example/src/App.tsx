@@ -15,7 +15,7 @@ const App = () => {
 	const handleDateChange = useCallback((date) => {
 		console.debug('DatePicker', 'onChange', date);
 		setSelected(date);
-		setLogs((logs) => [`Date changed: ${date.toLocaleString()}`, ...logs])
+		setLogs((logs) => [date ? `Date changed: ${date.toLocaleString()}` : `Date cleared`, ...logs])
 	}, []);
 
 	const handleSelectorChange = useCallback((e) => {
@@ -66,7 +66,7 @@ const App = () => {
 					onChange={handleDateChange}
 					maxDate={maxDate}
 					minDate={minDate}
-					timeStep={900}
+					timeStep={600}
 					disabled={disabled}
 				/>
 			</div>

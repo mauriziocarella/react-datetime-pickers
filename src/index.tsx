@@ -11,7 +11,7 @@ export type DateTimePickerSelectorType = "day" | "week" | "month" | "year";
 export interface DateTimePickerProps {
     selector?: DateTimePickerSelectorType,
     selected?: Date,
-    onChange?: (date: Date) => void,
+    onChange?: (date: Date | undefined) => void,
     minDate?: Date,
     maxDate?: Date,
     formatter?: (date: Date) => string,
@@ -75,14 +75,12 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
     }, []);
 
     useDidMountEffect(() => {
-        if (selected) {
-            if (typeof props.onChange === "function") {
-                props.onChange(selected)
-            }
+        if (typeof props.onChange === "function") {
+            props.onChange(selected)
+        }
 
-            if (props.closeOnSelect) {
-                setOpen(false);
-            }
+        if (props.closeOnSelect) {
+            setOpen(false);
         }
     }, [selected, props.closeOnSelect])
 
@@ -136,7 +134,14 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
             ref={container}
             className={classNames("react-datetime-pickers", `react-datetime-pickers-selector-${selector}`)}
         >
-            <Input onClick={toggleOpen} disabled={disabled} readOnly={readOnly}/>
+            <Input
+                onClick={toggleOpen}
+                disabled={disabled}
+                readOnly={readOnly}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    if (!e.currentTarget.value) setSelected(undefined)
+                }}
+            />
             <div
                 ref={overlay}
                 className={classNames("react-datetime-pickers-overlay", `react-datetime-pickers-mode-${view}`)}
