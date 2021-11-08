@@ -32,7 +32,7 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
     const [open, setOpen] = useState(false);
     const [view, setView] = useState(selector);
     const [timeOpen, setTimeOpen] = useState(false);
-    const [selected, setSelected] = useState(_selected || new Date());
+    const [selected, setSelected] = useState(_selected);
 
     const container = useRef<HTMLDivElement>(null);
     const overlay = useRef(null);
@@ -71,12 +71,14 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
     }, []);
 
     useDidMountEffect(() => {
-        if (typeof props.onChange === "function") {
-            props.onChange(selected)
-        }
+        if (selected) {
+            if (typeof props.onChange === "function") {
+                props.onChange(selected)
+            }
 
-        if (props.closeOnSelect) {
-            setOpen(false);
+            if (props.closeOnSelect) {
+                setOpen(false);
+            }
         }
     }, [selected, props.closeOnSelect])
 
@@ -87,7 +89,7 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
     }, [open]);
 
     useEffect(() => {
-        if (input.current) {
+        if (input.current && selected) {
             const formatter = (date: Date) => {
                 if (typeof props.formatter === 'function') return props.formatter(date)
 
@@ -119,7 +121,7 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
 
     useEffect(() => {
         if (_selected) {
-            if (_selected.getTime() !== selected.getTime()) {
+            if (_selected.getTime() !== selected?.getTime()) {
                 setSelected(_selected)
             }
         }
@@ -141,7 +143,7 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
                     open={open}
                     view={view || 'day'}
                     setView={setView}
-                    selected={selected}
+                    selected={selected || new Date()}
                     setDate={setDate}
                     timeOpen={timeOpen}
                     toggleTime={toggleTime}

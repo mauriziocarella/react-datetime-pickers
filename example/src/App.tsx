@@ -6,7 +6,7 @@ import 'react-datetime-pickers/dist/index.css'
 import './App.scss'
 
 const App = () => {
-	const [selected, setSelected] = React.useState(new Date());
+	const [selected, setSelected] = React.useState();
 	const [selector, setSelector] = React.useState<DateTimePickerSelectorType>("day");
 	const [showTimePicker, setShowTimePicker] = React.useState(true);
 	const [logs, setLogs] = React.useState<string[]>([]);
@@ -56,6 +56,8 @@ const App = () => {
 					minDate={minDate}
 				/>
 			</div>
+
+			<pre>{JSON.stringify(selected)}</pre>
 
 			<pre style={{display: 'none'}}>
 				{logs.join("\n")}
