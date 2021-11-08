@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 
 import DateTimePicker, {DateTimePickerSelectorType} from 'react-datetime-pickers'
 import 'react-datetime-pickers/dist/index.css'
@@ -6,22 +6,26 @@ import 'react-datetime-pickers/dist/index.css'
 import './App.scss'
 
 const App = () => {
-	const [selected, setSelected] = React.useState();
-	const [selector, setSelector] = React.useState<DateTimePickerSelectorType>("day");
-	const [showTimePicker, setShowTimePicker] = React.useState(true);
-	const [logs, setLogs] = React.useState<string[]>([]);
+	const [selected, setSelected] = useState();
+	const [selector, setSelector] = useState<DateTimePickerSelectorType>("day");
+	const [showTimePicker, setShowTimePicker] = useState(true);
+	const [disabled, setDisabled] = useState(false);
+	const [logs, setLogs] = useState<string[]>([]);
 
-	const handleDateChange = React.useCallback((date) => {
+	const handleDateChange = useCallback((date) => {
 		console.debug('DatePicker', 'onChange', date);
 		setSelected(date);
 		setLogs((logs) => [`Date changed: ${date.toLocaleString()}`, ...logs])
 	}, []);
 
-	const handleSelectorChange = React.useCallback((e) => {
+	const handleSelectorChange = useCallback((e) => {
 		setSelector(e.target.value);
 	}, []);
-	const handleShowTimePickerChange = React.useCallback((e) => {
+	const handleShowTimePickerChange = useCallback((e) => {
 		setShowTimePicker(!!e.target.checked);
+	}, []);
+	const handleDisabledChange = useCallback((e) => {
+		setDisabled(!!e.target.checked);
 	}, []);
 
 	const minDate = new Date(2018, 2, 20);
@@ -41,9 +45,17 @@ const App = () => {
 			<div>
 				<label>Show time picker</label>
 				<input
-					type={"checkbox"}
+					type="checkbox"
 					checked={showTimePicker}
 					onChange={handleShowTimePickerChange}
+				/>
+			</div>
+			<div>
+				<label>Disabled</label>
+				<input
+					type="checkbox"
+					checked={disabled}
+					onChange={handleDisabledChange}
 				/>
 			</div>
 			<div>
@@ -54,6 +66,7 @@ const App = () => {
 					onChange={handleDateChange}
 					maxDate={maxDate}
 					minDate={minDate}
+					disabled={disabled}
 				/>
 			</div>
 

@@ -18,6 +18,8 @@ export interface DateTimePickerProps {
     timePicker?: boolean,
     firstDayOfWeek?: number,
     closeOnSelect?: boolean,
+    disabled?: boolean,
+    readOnly?: boolean
 }
 const defaultProps: DateTimePickerProps = {
     selector: 'day',
@@ -27,7 +29,7 @@ const defaultProps: DateTimePickerProps = {
 }
 
 const Container: React.FC<DateTimePickerProps> = (props) => {
-    const {selector, minDate, maxDate, timePicker, selected: _selected} = props;
+    const {selector, minDate, maxDate, timePicker, selected: _selected, disabled, readOnly} = props;
 
     const [open, setOpen] = useState(false);
     const [view, setView] = useState(selector);
@@ -50,13 +52,13 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
         setSelected(d);
     }, [minDate, maxDate]);
 
-    const Input = useCallback(({onClick}) => {
+    const Input = useCallback((inputProps) => {
         if (React.isValidElement(props.children)) {
             return React.cloneElement(props.children, {
                 ...props.children.props,
                 ref: input,
                 className: classNames(props.children.props.className, "react-datetime-pickers-input"),
-                onClick,
+                ...inputProps,
             })
         }
 
@@ -65,7 +67,7 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
                 ref={input}
                 type="text"
                 className="react-datetime-pickers-input"
-                onClick={onClick}
+                {...inputProps}
             />
         );
     }, []);
@@ -132,7 +134,7 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
             ref={container}
             className={classNames("react-datetime-pickers", `react-datetime-pickers-selector-${selector}`)}
         >
-            <Input onClick={toggleOpen}/>
+            <Input onClick={toggleOpen} disabled={disabled} readOnly={readOnly}/>
             <div
                 ref={overlay}
                 className={classNames("react-datetime-pickers-overlay", `react-datetime-pickers-mode-${view}`)}
