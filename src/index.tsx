@@ -19,6 +19,8 @@ export interface DateTimePickerProps {
     firstDayOfWeek?: number,
     closeOnSelect?: boolean,
     timeStep?: number,
+    disabled?: boolean,
+    readOnly?: boolean
 }
 const defaultProps: DateTimePickerProps = {
     selector: 'day',
@@ -29,12 +31,12 @@ const defaultProps: DateTimePickerProps = {
 }
 
 const Container: React.FC<DateTimePickerProps> = (props) => {
-    const {selector, minDate, maxDate, timePicker, selected: _selected, timeStep} = props;
+    const {selector, minDate, maxDate, timePicker, selected: _selected, disabled, readOnly, timeStep} = props;
 
     const [open, setOpen] = useState(false);
     const [view, setView] = useState(selector);
     const [timeOpen, setTimeOpen] = useState(false);
-    const [selected, setSelected] = useState(_selected || new Date());
+    const [selected, setSelected] = useState(_selected);
 
     const container = useRef<HTMLDivElement>(null);
     const overlay = useRef(null);
@@ -52,13 +54,13 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
         setSelected(d);
     }, [minDate, maxDate]);
 
-    const Input = useCallback(({onClick}) => {
+    const Input = useCallback((inputProps) => {
         if (React.isValidElement(props.children)) {
             return React.cloneElement(props.children, {
                 ...props.children.props,
                 ref: input,
                 className: classNames(props.children.props.className, "react-datetime-pickers-input"),
-                onClick,
+                ...inputProps,
             })
         }
 
@@ -67,18 +69,20 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
                 ref={input}
                 type="text"
                 className="react-datetime-pickers-input"
-                onClick={onClick}
+                {...inputProps}
             />
         );
     }, []);
 
     useDidMountEffect(() => {
-        if (typeof props.onChange === "function") {
-            props.onChange(selected)
-        }
+        if (selected) {
+            if (typeof props.onChange === "function") {
+                props.onChange(selected)
+            }
 
-        if (props.closeOnSelect) {
-            setOpen(false);
+            if (props.closeOnSelect) {
+                setOpen(false);
+            }
         }
     }, [selected, props.closeOnSelect])
 
@@ -89,7 +93,7 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
     }, [open]);
 
     useEffect(() => {
-        if (input.current) {
+        if (input.current && selected) {
             const formatter = (date: Date) => {
                 if (typeof props.formatter === 'function') return props.formatter(date)
 
@@ -121,7 +125,7 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
 
     useEffect(() => {
         if (_selected) {
-            if (_selected.getTime() !== selected.getTime()) {
+            if (_selected.getTime() !== selected?.getTime()) {
                 setSelected(_selected)
             }
         }
@@ -132,7 +136,7 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
             ref={container}
             className={classNames("react-datetime-pickers", `react-datetime-pickers-selector-${selector}`)}
         >
-            <Input onClick={toggleOpen}/>
+            <Input onClick={toggleOpen} disabled={disabled} readOnly={readOnly}/>
             <div
                 ref={overlay}
                 className={classNames("react-datetime-pickers-overlay", `react-datetime-pickers-mode-${view}`)}
@@ -143,7 +147,7 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
                     open={open}
                     view={view || 'day'}
                     setView={setView}
-                    selected={selected}
+                    selected={selected || new Date()}
                     setDate={setDate}
                     timeOpen={timeOpen}
                     toggleTime={toggleTime}
