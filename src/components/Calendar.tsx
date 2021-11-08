@@ -15,6 +15,7 @@ interface CalendarProps extends DateTimePickerProps {
     timeOpen: boolean,
     toggleTime: () => void,
     timePicker: boolean,
+    timeStep: number,
 }
 
 const Calendar: React.FC<CalendarProps> = (props) => {
@@ -29,7 +30,8 @@ const Calendar: React.FC<CalendarProps> = (props) => {
         setDate,
         minDate,
         maxDate,
-        firstDayOfWeek
+        firstDayOfWeek,
+        timeStep
     } = props;
     const [year, setYear] = useState(selected.getFullYear());
     const [month, setMonth] = useState(selected.getMonth());
@@ -87,6 +89,7 @@ const Calendar: React.FC<CalendarProps> = (props) => {
                             selected={selected}
                             onChange={setDate}
                             helper={helper}
+                            step={timeStep}
                         />
                     </div>
                     <div className={classNames("react-datetime-pickers-footer")}>

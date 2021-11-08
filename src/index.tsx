@@ -18,16 +18,18 @@ export interface DateTimePickerProps {
     timePicker?: boolean,
     firstDayOfWeek?: number,
     closeOnSelect?: boolean,
+    timeStep?: number,
 }
 const defaultProps: DateTimePickerProps = {
     selector: 'day',
     timePicker: false,
     firstDayOfWeek: 1,
     closeOnSelect: true,
+    timeStep: 600,
 }
 
 const Container: React.FC<DateTimePickerProps> = (props) => {
-    const {selector, minDate, maxDate, timePicker, selected: _selected} = props;
+    const {selector, minDate, maxDate, timePicker, selected: _selected, timeStep} = props;
 
     const [open, setOpen] = useState(false);
     const [view, setView] = useState(selector);
@@ -146,6 +148,7 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
                     timeOpen={timeOpen}
                     toggleTime={toggleTime}
                     timePicker={timePicker || false}
+                    timeStep={timeStep || 600}
                 />
             </div>
         </div>

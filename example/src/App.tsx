@@ -54,6 +54,7 @@ const App = () => {
 					onChange={handleDateChange}
 					maxDate={maxDate}
 					minDate={minDate}
+					timeStep={900}
 				/>
 			</div>
 

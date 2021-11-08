@@ -7,14 +7,15 @@ interface TimePickerGridProps {
     selected: Date,
     onChange: (date: Date) => void,
     helper: ReturnType<typeof Helper>,
+    step: number,
 }
-export const TimePickerGrid: React.FC<TimePickerGridProps> = ({selected, onChange, helper}) => {
+export const TimePickerGrid: React.FC<TimePickerGridProps> = ({selected, onChange, helper, step}) => {
     const times = useMemo(() => {
         let start = (new Date(selected)).setHours(0, 0, 0, 0);
         let end = (new Date(selected)).setHours(23, 59, 59, 999);
         let times = [];
 
-        for (let m = start; m < end; m += (600 * 1000)) {
+        for (let m = start; m < end; m += (step * 1000)) {
             times.push({
                 date: new Date(m),
                 disabled: false,
