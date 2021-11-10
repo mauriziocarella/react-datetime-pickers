@@ -5,16 +5,17 @@ import {useDidMountEffect} from "./helper/hooks";
 
 import './index.scss'
 import Calendar from "./components/Calendar";
+import Input from './components/Input';
 
 export type DateTimePickerSelectorType = "day" | "week" | "month" | "year";
 
 export interface DateTimePickerProps {
     selector?: DateTimePickerSelectorType,
     selected?: Date,
-    onChange?: (date: Date | undefined) => void,
+    onChange?: (date?: Date) => void,
     minDate?: Date,
     maxDate?: Date,
-    formatter?: (date: Date) => string,
+    formatter?: (date?: Date, showTime?: boolean) => string,
     timePicker?: boolean,
     firstDayOfWeek?: number,
     closeOnSelect?: boolean,
@@ -31,7 +32,7 @@ const defaultProps: DateTimePickerProps = {
 }
 
 const Container: React.FC<DateTimePickerProps> = (props) => {
-    const {selector, minDate, maxDate, timePicker, selected: _selected, disabled, readOnly, timeStep} = props;
+    const {selector, minDate, maxDate, timePicker, selected: _selected, disabled, readOnly, timeStep, formatter} = props;
 
     const [open, setOpen] = useState(false);
     const [view, setView] = useState(selector);
@@ -50,29 +51,8 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
 
         if (minDate && d < minDate) d = minDate;
         if (maxDate && d > maxDate) d = maxDate;
-
         setSelected(d);
     }, [minDate, maxDate]);
-
-    const Input = useCallback((inputProps) => {
-        if (React.isValidElement(props.children)) {
-            return React.cloneElement(props.children, {
-                ...props.children.props,
-                ref: input,
-                className: classNames(props.children.props.className, "react-datetime-pickers-input"),
-                ...inputProps,
-            })
-        }
-
-        return (
-            <input
-                ref={input}
-                type="text"
-                className="react-datetime-pickers-input"
-                {...inputProps}
-            />
-        );
-    }, []);
 
     useDidMountEffect(() => {
         if (typeof props.onChange === "function") {
@@ -89,21 +69,6 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
             setTimeOpen(false);
         }
     }, [open]);
-
-    useEffect(() => {
-        if (input.current && selected) {
-            const formatter = (date: Date) => {
-                if (typeof props.formatter === 'function') return props.formatter(date)
-
-                let value = date.toLocaleDateString()
-                if (timePicker) value = date.toLocaleString()
-
-                return value
-            }
-
-            input.current!.value = formatter(selected)
-        }
-    }, [selected, view, selector, timeOpen, timePicker])
 
     useEffect(() => {
         const onClick = (e: MouseEvent) => {
@@ -135,12 +100,16 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
             className={classNames("react-datetime-pickers", `react-datetime-pickers-selector-${selector}`)}
         >
             <Input
+                selected={selected}
+                formatter={formatter}
                 onClick={toggleOpen}
                 disabled={disabled}
                 readOnly={readOnly}
+                timePicker={timePicker}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     if (!e.currentTarget.value) setSelected(undefined)
                 }}
+                children={props.children}
             />
             <div
                 ref={overlay}
