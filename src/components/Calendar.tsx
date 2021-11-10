@@ -1,12 +1,15 @@
-import React, {useMemo, useState} from "react";
-import Helper from "../Helper";
+import React, { useEffect, useMemo, useState } from "react";
 import classNames from "classnames";
-import {TimePickerGrid} from "./TimePicker";
-import {DateTimePickerProps, DateTimePickerSelectorType} from "../index";
-import TimeToggle from "./TimeToggle";
-import {IconArrowLeft, IconArrowRight} from "../icons";
 
-interface CalendarProps extends DateTimePickerProps {
+import Helper from "../Helper";
+import { TimePickerGrid } from "./TimePicker";
+import { DateTimePickerProps, DateTimePickerSelectorType } from "../index";
+import TimeToggle from "./TimeToggle";
+import { IconArrowLeft, IconArrowRight } from "../icons";
+import axios, { AxiosRequestConfig } from 'axios';
+import { Loading } from './Loading';
+
+export interface CalendarProps extends DateTimePickerProps {
     open: boolean,
     view: DateTimePickerSelectorType,
     setView: (view: DateTimePickerSelectorType) => void,
@@ -16,6 +19,7 @@ interface CalendarProps extends DateTimePickerProps {
     toggleTime: () => void,
     timePicker: boolean,
     timeStep: number,
+    disabledDates?: Array<Date | string> | AxiosRequestConfig,
 }
 
 const Calendar: React.FC<CalendarProps> = (props) => {
@@ -30,11 +34,14 @@ const Calendar: React.FC<CalendarProps> = (props) => {
         setDate,
         minDate,
         maxDate,
+        disabledDates: _disabledDates,
         firstDayOfWeek,
         timeStep
     } = props;
     const [year, setYear] = useState(selected.getFullYear());
     const [month, setMonth] = useState(selected.getMonth());
+    const [disabledDates, setDisabledDates] = useState<Date[]>([]);
+    const [loading, setLoading] = useState(false);
 
     const helper = useMemo(() => Helper(firstDayOfWeek), [firstDayOfWeek]);
 
@@ -80,10 +87,46 @@ const Calendar: React.FC<CalendarProps> = (props) => {
     const handleNext = () => handleChange(1);
     const handlePrevious = () => handleChange(-1);
 
+    useEffect(() => {
+        if (typeof _disabledDates === "object") {
+            if (Array.isArray(_disabledDates)) {
+                const dates = _disabledDates.map((d) => {
+                    if (typeof d === "string") return new Date(d)
+                    if (d instanceof Date) return d
+
+                    throw "Unknown item type in disabledDates array props"
+                })
+
+                setDisabledDates(dates)
+            }
+            else {
+                setLoading(true)
+                axios({
+                    ..._disabledDates,
+                    params: {
+                        ..._disabledDates.params,
+                        year,
+                        month,
+                        view,
+                    }
+                })
+                    .then(({data}) => {
+                        if (typeof data !== "object" || !Array.isArray(data)) throw "Response should be an array of date strings";
+
+                        const dates = data.map((d) => new Date(d))
+                        setDisabledDates(dates)
+                    })
+                    .catch(() => setDisabledDates([]))
+                    .finally(() => setLoading(false))
+            }
+        }
+    }, [year, month, view])
+
     switch (timeOpen ? 'time' : view) {
         case 'time': {
             return (
                 <React.Fragment>
+                    {loading && <Loading/>}
                     <div className={classNames("react-datetime-pickers-body")}>
                         <TimePickerGrid
                             selected={selected}
@@ -117,26 +160,30 @@ const Calendar: React.FC<CalendarProps> = (props) => {
                         day.disabled = true
                     }
 
+                    if (!day.disabled) {
+                        day.disabled = disabledDates.some((d) => helper.isSameDayAs(day.date, d))
+                    }
+
                     return day
                 });
 
                 return week
             });
 
-            const isSelectedDay = ({date}: { date: Date }) => {
+            const isSelectedDay = ({ date }: { date: Date }) => {
                 if (selected) {
                     return helper.isSameDayAs(date, selected)
                 }
 
                 return false
             }
-            const isTodayDay = ({date}: { date: Date }) => {
+            const isTodayDay = ({ date }: { date: Date }) => {
                 const today = new Date()
 
                 return helper.isSameDayAs(date, today)
             };
 
-            const onDayClick = ({date}: { date: Date }) => {
+            const onDayClick = ({ date }: { date: Date }) => {
                 let _selected = selected
                 _selected.setFullYear(date.getFullYear(), date.getMonth(), date.getDate())
 
@@ -152,6 +199,7 @@ const Calendar: React.FC<CalendarProps> = (props) => {
 
             return (
                 <React.Fragment>
+                    {loading && <Loading/>}
                     <div className={classNames("react-datetime-pickers-head")}>
                         <div
                             className={classNames("react-datetime-pickers-button react-datetime-pickers-button-outline react-datetime-pickers-button-icon")}
@@ -225,23 +273,29 @@ const Calendar: React.FC<CalendarProps> = (props) => {
                     month.disabled = true
                 }
 
+                if (!month.disabled) {
+                    if (selector === "month") {
+                        month.disabled = disabledDates.some((d) => helper.isSameMonthAs(month.date, d))
+                    }
+                }
+
                 return month;
             })
 
-            const isSelectedMonth = ({date}: { date: Date }) => {
+            const isSelectedMonth = ({ date }: { date: Date }) => {
                 if (selected) {
                     return helper.isSameMonthAs(date, selected)
                 }
 
                 return false
             }
-            const isTodayMonth = ({date}: { date: Date }) => {
+            const isTodayMonth = ({ date }: { date: Date }) => {
                 const today = new Date()
 
                 return helper.isSameMonthAs(date, today)
             };
 
-            const onMonthClick = ({month}: { month: number }) => {
+            const onMonthClick = ({ month }: { month: number }) => {
                 setMonth(month)
                 if (selector === 'month') {
                     let _selected = selected
@@ -316,23 +370,29 @@ const Calendar: React.FC<CalendarProps> = (props) => {
                     year.disabled = true
                 }
 
+                if (!year.disabled) {
+                    if (selector === "year") {
+                        year.disabled = disabledDates.some((d) => helper.isSameYearAs(year.date, d))
+                    }
+                }
+
                 years.push(year)
             }
 
-            const isSelectedYear = ({date}: { date: Date }) => {
+            const isSelectedYear = ({ date }: { date: Date }) => {
                 if (selected) {
                     return helper.isSameYearAs(date, selected)
                 }
 
                 return false
             }
-            const isTodayYear = ({date}: { date: Date }) => {
+            const isTodayYear = ({ date }: { date: Date }) => {
                 const today = new Date()
 
                 return helper.isSameYearAs(date, today)
             };
 
-            const onYearClick = ({year}: { year: number }) => {
+            const onYearClick = ({ year }: { year: number }) => {
                 setYear(year)
 
                 if (selector === 'year') {

@@ -4,22 +4,20 @@ import classNames from 'classnames'
 import {useDidMountEffect} from "./helper/hooks";
 
 import './index.scss'
-import Calendar from "./components/Calendar";
+import Calendar, { CalendarProps } from "./components/Calendar";
 import Input from './components/Input';
 
 export type DateTimePickerSelectorType = "day" | "week" | "month" | "year";
 
-export interface DateTimePickerProps {
+export type DateTimePickerProps = Pick<CalendarProps,  "timePicker" | "timeStep" | "disabledDates"> & {
     selector?: DateTimePickerSelectorType,
     selected?: Date,
     onChange?: (date?: Date) => void,
     minDate?: Date,
     maxDate?: Date,
     formatter?: (date?: Date, showTime?: boolean) => string,
-    timePicker?: boolean,
     firstDayOfWeek?: number,
     closeOnSelect?: boolean,
-    timeStep?: number,
     disabled?: boolean,
     readOnly?: boolean
 }

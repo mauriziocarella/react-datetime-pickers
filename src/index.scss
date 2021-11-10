@@ -59,10 +59,6 @@
 
 
 
-
-
-
-
 $primary: #1970b3;
 $secondary: #b319a6;
 
@@ -131,6 +127,43 @@ $secondary: #b319a6;
 			&:focus {
 				outline: none;
 				box-shadow: 0 0 0 2px $primary;
+			}
+		}
+	}
+
+	.react-datetime-pickers-loading-overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background-color: rgba(#ffffff, .7);
+		z-index: 101;
+
+		.react-datetime-pickers-loading {
+			display: inline-block;
+			width: 30px;
+			height: 30px;
+			border: 2px solid rgba($primary, 0.2);
+			border-radius: 50%;
+			border-top-color: $primary;
+			animation: react-datetime-pickers-animation-spin 1s ease-in-out infinite;
+			-webkit-animation: react-datetime-pickers-animation-spin 1s ease-in-out infinite;
+			z-index: 1;
+
+			@keyframes react-datetime-pickers-animation-spin {
+				to {
+					-webkit-transform: rotate(-360deg);
+				}
+			}
+
+			@-webkit-keyframes react-datetime-pickers-animation-spin {
+				to {
+					-webkit-transform: rotate(-360deg);
+				}
 			}
 		}
 	}

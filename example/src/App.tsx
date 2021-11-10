@@ -68,6 +68,9 @@ const App = () => {
 					minDate={minDate}
 					timeStep={600}
 					disabled={disabled}
+					disabledDates={{
+						url: '/data/disabled-dates.json'
+					}}
 				/>
 			</div>
 

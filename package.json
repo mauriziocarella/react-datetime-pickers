@@ -1,6 +1,6 @@
 {
 	"name": "react-datetime-pickers",
-	"version": "1.0.33",
+	"version": "1.0.34",
 	"description": "React ready picker components for dates and time (month picker, week picker, day picker)",
 	"keywords": [
 		"react",
@@ -69,6 +69,7 @@
 		"@fortawesome/fontawesome-svg-core": "^1.2.34",
 		"@fortawesome/free-solid-svg-icons": "^5.15.2",
 		"@fortawesome/react-fontawesome": "^0.1.14",
+		"axios": "^0.24.0",
 		"classnames": "^2.2.6"
 	}
 }
