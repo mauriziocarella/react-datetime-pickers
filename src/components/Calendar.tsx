@@ -1,13 +1,13 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import classNames from "classnames";
 
 import Helper from "../Helper";
-import { TimePickerGrid } from "./TimePicker";
-import { DateTimePickerProps, DateTimePickerSelectorType } from "../index";
+import {TimePickerGrid} from "./TimePicker";
+import {DateTimePickerProps, DateTimePickerSelectorType} from "../index";
 import TimeToggle from "./TimeToggle";
-import { IconArrowLeft, IconArrowRight } from "./icons";
-import axios, { AxiosRequestConfig } from 'axios';
-import { Loading } from './Loading';
+import {IconArrowLeft, IconArrowRight} from "./icons";
+import axios, {AxiosRequestConfig} from 'axios';
+import {Loading} from './Loading';
 
 export interface CalendarProps extends DateTimePickerProps {
     open: boolean,
@@ -47,8 +47,8 @@ const Calendar: React.FC<CalendarProps> = (props) => {
 
     const handleChange = (offset: number) => {
         switch (view) {
-            case 'week':
-            case 'day': {
+            case DateTimePickerSelectorType.WEEK:
+            case DateTimePickerSelectorType.DAY: {
                 let _month = month
                 let _year = year
 
@@ -66,7 +66,7 @@ const Calendar: React.FC<CalendarProps> = (props) => {
                 setYear(_year)
                 break
             }
-            case 'month': {
+            case DateTimePickerSelectorType.MONTH: {
                 let _year = year
 
                 _year += offset
@@ -74,7 +74,7 @@ const Calendar: React.FC<CalendarProps> = (props) => {
                 setYear(_year)
                 break
             }
-            case 'year': {
+            case DateTimePickerSelectorType.YEAR: {
                 let _year = year
 
                 _year += offset * 15
@@ -92,9 +92,8 @@ const Calendar: React.FC<CalendarProps> = (props) => {
             if (Array.isArray(_disabledDates)) {
                 const dates = _disabledDates.map((d) => {
                     if (typeof d === "string") return new Date(d)
-                    if (d instanceof Date) return d
 
-                    throw "Unknown item type in disabledDates array props"
+                    return d
                 })
 
                 setDisabledDates(dates)
@@ -146,9 +145,9 @@ const Calendar: React.FC<CalendarProps> = (props) => {
             )
         }
 
-        case 'week':
-        case 'day': {
-            if (selector !== 'day' && selector !== 'week') return null
+        case DateTimePickerSelectorType.WEEK:
+        case DateTimePickerSelectorType.DAY: {
+            if (selector !== DateTimePickerSelectorType.DAY && selector !== DateTimePickerSelectorType.WEEK) return null
 
             const weeks = helper.getMonthWeeks(year, month).map((week) => {
                 week.days.map((day) => {
@@ -188,7 +187,7 @@ const Calendar: React.FC<CalendarProps> = (props) => {
                 _selected.setFullYear(date.getFullYear(), date.getMonth(), date.getDate())
 
                 switch (selector) {
-                    case 'week': {
+                    case DateTimePickerSelectorType.WEEK: {
                         _selected = helper.weekStart(_selected)
                         break
                     }
@@ -207,7 +206,7 @@ const Calendar: React.FC<CalendarProps> = (props) => {
                         >
                             <IconArrowLeft/>
                         </div>
-                        <div className={classNames("react-datetime-pickers-selector")} onClick={() => setView('month')}>
+                        <div className={classNames("react-datetime-pickers-selector")} onClick={() => setView(DateTimePickerSelectorType.MONTH)}>
                             {helper.months[month].name}/{year}
                         </div>
                         <div
@@ -226,7 +225,7 @@ const Calendar: React.FC<CalendarProps> = (props) => {
                         <div className={classNames("react-datetime-pickers-days")}>
                             {weeks.map((week, index) => (
                                 <div key={index} className={classNames("react-datetime-pickers-week", {
-                                    selected: selector === 'week' && isSelectedDay(week.days[0])
+                                    selected: selector === DateTimePickerSelectorType.WEEK && isSelectedDay(week.days[0])
                                 })}>
                                     {week.days.map((day, index) => (
                                         <button
@@ -258,9 +257,9 @@ const Calendar: React.FC<CalendarProps> = (props) => {
             )
         }
 
-        case 'month': {
+        case DateTimePickerSelectorType.MONTH: {
             const months = helper.months.map((_month) => {
-                let month = {
+                const month = {
                     ..._month,
                     date: new Date(year, _month.month, 1),
                     disabled: false,
@@ -297,13 +296,13 @@ const Calendar: React.FC<CalendarProps> = (props) => {
 
             const onMonthClick = ({ month }: { month: number }) => {
                 setMonth(month)
-                if (selector === 'month') {
-                    let _selected = selected
+                if (selector === DateTimePickerSelectorType.MONTH) {
+                    const _selected = selected
                     _selected.setMonth(month, 1)
                     _selected.setFullYear(year)
                     setDate(_selected)
                 } else {
-                    setView('day')
+                    setView(DateTimePickerSelectorType.DAY)
                 }
             };
 
@@ -315,7 +314,7 @@ const Calendar: React.FC<CalendarProps> = (props) => {
                             onClick={handlePrevious}>
                             <IconArrowLeft/>
                         </div>
-                        <div className={classNames("react-datetime-pickers-selector")} onClick={() => setView('year')}>
+                        <div className={classNames("react-datetime-pickers-selector")} onClick={() => setView(DateTimePickerSelectorType.YEAR)}>
                             {year}
                         </div>
                         <div
@@ -354,7 +353,7 @@ const Calendar: React.FC<CalendarProps> = (props) => {
             )
         }
 
-        case 'year': {
+        case DateTimePickerSelectorType.YEAR: {
             const years = []
             for (let i = year - 7; i <= year + 7; i++) {
                 const year = {
@@ -395,13 +394,13 @@ const Calendar: React.FC<CalendarProps> = (props) => {
             const onYearClick = ({ year }: { year: number }) => {
                 setYear(year)
 
-                if (selector === 'year') {
-                    let _selected = selected
+                if (selector === DateTimePickerSelectorType.YEAR) {
+                    const _selected = selected
                     _selected.setMonth(0, 1)
                     _selected.setFullYear(year)
                     setDate(_selected)
                 } else {
-                    setView('month')
+                    setView(DateTimePickerSelectorType.MONTH)
                 }
             };
 
@@ -413,7 +412,7 @@ const Calendar: React.FC<CalendarProps> = (props) => {
                             onClick={handlePrevious}>
                             <IconArrowLeft/>
                         </div>
-                        <div className={classNames("react-datetime-pickers-selector")} onClick={() => setView('year')}>
+                        <div className={classNames("react-datetime-pickers-selector")} onClick={() => setView(DateTimePickerSelectorType.YEAR)}>
                             {year}
                         </div>
                         <div
@@ -453,7 +452,7 @@ const Calendar: React.FC<CalendarProps> = (props) => {
         }
     }
 
-    return null
+    return <span>OPS</span>
 }
 
 export default Calendar;

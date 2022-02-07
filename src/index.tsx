@@ -7,7 +7,12 @@ import './index.scss'
 import Calendar, { CalendarProps } from "./components/Calendar";
 import Input from './components/Input';
 
-export type DateTimePickerSelectorType = "day" | "week" | "month" | "year";
+export enum DateTimePickerSelectorType {
+    DAY = "day",
+    WEEK = "week",
+    MONTH = "month",
+    YEAR = "year",
+}
 
 export type DateTimePickerProps = Pick<CalendarProps,  "timePicker" | "timeStep" | "disabledDates"> & {
     selector?: DateTimePickerSelectorType,
@@ -22,7 +27,7 @@ export type DateTimePickerProps = Pick<CalendarProps,  "timePicker" | "timeStep"
     readOnly?: boolean
 }
 const defaultProps: DateTimePickerProps = {
-    selector: 'day',
+    selector: DateTimePickerSelectorType.DAY,
     timePicker: false,
     firstDayOfWeek: 1,
     closeOnSelect: true,
@@ -39,7 +44,6 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
 
     const container = useRef<HTMLDivElement>(null);
     const overlay = useRef(null);
-    const input = useRef<HTMLInputElement>(null);
 
     const toggleOpen = useCallback(() => setOpen((open) => !open), []);
     const toggleTime = useCallback(() => setTimeOpen((open) => !open), []);
@@ -117,7 +121,7 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
                 <Calendar
                     {...props}
                     open={open}
-                    view={view || 'day'}
+                    view={view || DateTimePickerSelectorType.DAY}
                     setView={setView}
                     selected={selected || new Date()}
                     setDate={setDate}
@@ -132,4 +136,5 @@ const Container: React.FC<DateTimePickerProps> = (props) => {
 }
 Container.defaultProps = defaultProps;
 
-export default Container
+export const DateTimePicker = Container;
+export default Container;

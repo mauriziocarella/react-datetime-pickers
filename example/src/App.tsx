@@ -1,35 +1,45 @@
-import React, { useCallback, useState } from 'react'
+import React, {useMemo, useState} from 'react'
 
-import DateTimePicker, {DateTimePickerSelectorType} from 'react-datetime-pickers'
+import {DateTimePicker, DateTimePickerSelectorType} from 'react-datetime-pickers'
 import 'react-datetime-pickers/dist/index.css'
 
 import './App.scss'
 
-const App = () => {
-	const [selected, setSelected] = useState();
-	const [selector, setSelector] = useState<DateTimePickerSelectorType>("day");
+const App: React.VFC = () => {
+	const [selected, setSelected] = useState<Date>();
+	const [selector, setSelector] = useState<DateTimePickerSelectorType>(DateTimePickerSelectorType.DAY);
 	const [showTimePicker, setShowTimePicker] = useState(true);
 	const [disabled, setDisabled] = useState(false);
 	const [logs, setLogs] = useState<string[]>([]);
 
-	const handleDateChange = useCallback((date) => {
+	const handleDateChange = (date?: Date) => {
 		console.debug('DatePicker', 'onChange', date);
 		setSelected(date);
 		setLogs((logs) => [date ? `Date changed: ${date.toLocaleString()}` : `Date cleared`, ...logs])
-	}, []);
+	};
 
-	const handleSelectorChange = useCallback((e) => {
-		setSelector(e.target.value);
-	}, []);
-	const handleShowTimePickerChange = useCallback((e) => {
-		setShowTimePicker(!!e.target.checked);
-	}, []);
-	const handleDisabledChange = useCallback((e) => {
-		setDisabled(!!e.target.checked);
-	}, []);
+	const handleSelectorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		setSelector(e.target.value as DateTimePickerSelectorType);
+	};
+	const handleShowTimePickerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setShowTimePicker(e.target.checked);
+	};
+	const handleDisabledChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setDisabled(e.target.checked);
+	};
 
-	const minDate = new Date(2018, 2, 20);
-	const maxDate = new Date(2021, 10, 15);
+	const {minDate, maxDate} = useMemo(() => {
+		const minDate = new Date();
+		const maxDate = new Date();
+
+		minDate.setDate(minDate.getDate() - 40)
+		maxDate.setDate(maxDate.getDate() + 7)
+
+		return {
+			minDate,
+			maxDate,
+		}
+	}, [])
 
 	return (
 		<>
