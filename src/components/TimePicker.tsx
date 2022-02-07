@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useRef} from "react";
 import classNames from "classnames";
-import {IconArrowDown, IconArrowUp} from "./icons";
+import {IconArrowDown, IconArrowUp} from "./icons/Icons";
 import Helper from "../Helper";
 
 interface TimePickerGridProps {
@@ -11,9 +11,9 @@ interface TimePickerGridProps {
 }
 export const TimePickerGrid: React.FC<TimePickerGridProps> = ({selected, onChange, helper, step}) => {
     const times = useMemo(() => {
-        let start = (new Date(selected)).setHours(0, 0, 0, 0);
-        let end = (new Date(selected)).setHours(23, 59, 59, 999);
-        let times = [];
+        const start = (new Date(selected)).setHours(0, 0, 0, 0);
+        const end = (new Date(selected)).setHours(23, 59, 59, 999);
+        const times = [];
 
         for (let m = start; m < end; m += (step * 1000)) {
             times.push({

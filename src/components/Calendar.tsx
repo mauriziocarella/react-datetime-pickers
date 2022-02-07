@@ -5,7 +5,7 @@ import Helper from "../Helper";
 import {TimePickerGrid} from "./TimePicker";
 import {DateTimePickerProps, DateTimePickerSelectorType} from "../index";
 import TimeToggle from "./TimeToggle";
-import {IconArrowLeft, IconArrowRight} from "./icons";
+import {IconArrowLeft, IconArrowRight} from "./icons/Icons";
 import axios, {AxiosRequestConfig} from 'axios';
 import {Loading} from './Loading';
 

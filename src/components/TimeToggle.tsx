@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import {IconCalendar, IconClock} from "./icons";
+import {IconCalendar, IconClock} from "./icons/Icons";
 
 interface TimeToggleProps {
     timePicker: boolean,
