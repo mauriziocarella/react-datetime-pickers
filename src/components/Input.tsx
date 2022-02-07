@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useMemo, useRef } from 'react';
+import React, {forwardRef, useEffect, useRef} from 'react';
 import classNames from 'classnames';
 
 interface InputProps {
@@ -7,24 +7,13 @@ interface InputProps {
 	timePicker?: boolean,
 }
 
-const Input = forwardRef<HTMLInputElement, InputProps & Omit<React.HTMLProps<HTMLInputElement>, keyof InputProps>>(({selected, children, timePicker, ...props}, ref) => {
+const Input = forwardRef<HTMLInputElement, InputProps & Omit<React.HTMLProps<HTMLInputElement>, keyof InputProps>>(({selected, children, timePicker, formatter, ...props}) => {
 	const input = useRef<HTMLInputElement>(null);
-
-	// const value = useMemo(() => {
-	// 	if (typeof props.formatter === 'function') return props.formatter(selected, timePicker)
-	//
-	// 	if (!selected) return;
-	//
-	// 	let value = selected.toLocaleDateString()
-	// 	if (timePicker) value = selected.toLocaleString()
-	//
-	// 	return value
-	// }, [selected, timePicker])
 
 	useEffect(() => {
 		if (input.current) {
-			const formatter = (date?: Date): string => {
-				if (typeof props.formatter === 'function') return props.formatter(date, timePicker)
+			const formatValue = (date?: Date): string => {
+				if (typeof formatter === 'function') return formatter(date, timePicker)
 
 				if (!date) return '';
 
@@ -34,8 +23,9 @@ const Input = forwardRef<HTMLInputElement, InputProps & Omit<React.HTMLProps<HTM
 				return value
 			}
 
-			const value = formatter(selected);
-			input.current!.value = value
+			if (input.current) {
+				input.current.value = formatValue(selected)
+			}
 		}
 	}, [selected, timePicker])
 
