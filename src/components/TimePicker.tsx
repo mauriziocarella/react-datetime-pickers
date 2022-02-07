@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useRef} from "react";
 import classNames from "classnames";
-import {IconArrowDown, IconArrowUp} from "../icons";
+import {IconArrowDown, IconArrowUp} from "./icons";
 import Helper from "../Helper";
 
 interface TimePickerGridProps {
