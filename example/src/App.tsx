@@ -7,7 +7,7 @@ import './App.scss'
 
 const App: React.VFC = () => {
 	const [selected, setSelected] = useState<Date>();
-	const [selector, setSelector] = useState<DateTimePickerSelectorType>(DateTimePickerSelectorType.DAY);
+	const [selector, setSelector] = useState<DateTimePickerSelectorType>(DateTimePickerSelectorType.MONTH);
 	const [showTimePicker, setShowTimePicker] = useState(true);
 	const [disabled, setDisabled] = useState(false);
 	const [logs, setLogs] = useState<string[]>([]);

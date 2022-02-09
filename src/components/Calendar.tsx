@@ -1,47 +1,44 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import classNames from "classnames";
 
 import Helper from "../Helper";
-import {TimePickerGrid} from "./TimePicker";
-import {DateTimePickerProps, DateTimePickerSelectorType} from "../index";
+import {TimePickerGrid} from "./TimePickers";
+import {ContainerProps} from "./Container";
 import TimeToggle from "./TimeToggle";
 import {IconArrowLeft, IconArrowRight} from "./icons/Icons";
 import axios, {AxiosRequestConfig} from 'axios';
 import {Loading} from './Loading';
+import {useDidMountEffect} from "../helper/hooks";
+import {DateTimePickerSelectorType} from "../index";
 
-export interface CalendarProps extends DateTimePickerProps {
-    open: boolean,
-    view: DateTimePickerSelectorType,
-    setView: (view: DateTimePickerSelectorType) => void,
-    selected: Date
-    setDate: (date: Date) => void,
-    timeOpen: boolean,
-    toggleTime: () => void,
-    timePicker: boolean,
-    timeStep: number,
+export interface CalendarProps {
     disabledDates?: Array<Date | string> | AxiosRequestConfig,
+    timePicker?: boolean,
+    timeStep?: number,
 }
 
-const Calendar: React.FC<CalendarProps> = (props) => {
+const Calendar: React.FC<CalendarProps & ContainerProps & {
+    open: boolean,
+    setDate: (date: Date) => void,
+}> = (props) => {
     const {
-        view,
-        setView,
-        timeOpen,
-        toggleTime,
-        timePicker,
+        open = false,
         selector,
-        selected,
+        selected = new Date(),
         setDate,
         minDate,
         maxDate,
         disabledDates: _disabledDates,
         firstDayOfWeek,
+        timePicker = false,
         timeStep
     } = props;
+    const [view, setView] = useState(selector);
     const [year, setYear] = useState(selected.getFullYear());
     const [month, setMonth] = useState(selected.getMonth());
     const [disabledDates, setDisabledDates] = useState<Date[]>([]);
     const [loading, setLoading] = useState(false);
+    const [timeOpen, setTimeOpen] = useState(false);
 
     const helper = useMemo(() => Helper(firstDayOfWeek), [firstDayOfWeek]);
 
@@ -87,6 +84,8 @@ const Calendar: React.FC<CalendarProps> = (props) => {
     const handleNext = () => handleChange(1);
     const handlePrevious = () => handleChange(-1);
 
+    const toggleTime = useCallback(() => setTimeOpen((open) => !open), []);
+
     useEffect(() => {
         if (typeof _disabledDates === "object") {
             if (Array.isArray(_disabledDates)) {
@@ -121,8 +120,16 @@ const Calendar: React.FC<CalendarProps> = (props) => {
         }
     }, [year, month, view])
 
-    switch (timeOpen ? 'time' : view) {
-        case 'time': {
+    useEffect(() => setView(selector), [selector]);
+
+    useDidMountEffect(() => {
+        if (!open) {
+            setTimeOpen(false);
+        }
+    }, [open]);
+
+    switch (timeOpen ? DateTimePickerSelectorType.TIME : view) {
+        case DateTimePickerSelectorType.TIME: {
             return (
                 <React.Fragment>
                     {loading && <Loading/>}
@@ -452,7 +459,7 @@ const Calendar: React.FC<CalendarProps> = (props) => {
         }
     }
 
-    return <span>OPS</span>
+    return null
 }
 
 export default Calendar;
