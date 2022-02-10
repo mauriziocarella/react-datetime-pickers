@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	body {
+		@apply p-2 overflow-y-scroll;
+	}
+
+	label {
+		@apply mb-0 p-0 font-semibold;
+	}
+
+	input:not([type="checkbox"]):not([type="radio"]), select {
+		@apply block border border-gray-300 py-2 px-2 rounded #{!important};
+
+		&:focus {
+			@apply outline-none shadow-none shadow-transparent #{!important};
+		}
+	}
+
+	pre {
+		@apply bg-gray-200 border rounded p-6;
+	}
+
+	h1 {
+		@apply text-3xl font-bold;
+	}
+}
