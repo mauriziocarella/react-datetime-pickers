@@ -6,8 +6,8 @@ import {TimePickerGrid} from "./TimePickers";
 import {ContainerProps} from "./Container";
 import TimeToggle from "./TimeToggle";
 import {IconArrowLeft, IconArrowRight} from "./icons/Icons";
-import axios, {AxiosRequestConfig} from 'axios';
-import {Loading} from './Loading';
+import axios, {AxiosRequestConfig} from "axios";
+import {Loading} from "./Loading";
 import {useDidMountEffect} from "../helper/hooks";
 import {DateTimePickerSelectorType} from "../index";
 
@@ -19,7 +19,7 @@ export interface CalendarProps {
 
 const Calendar: React.FC<CalendarProps & ContainerProps & {
     open: boolean,
-    setDate: (date: Date) => void,
+    setDate: (date?: Date) => void,
 }> = (props) => {
     const {
         open = false,
@@ -136,7 +136,7 @@ const Calendar: React.FC<CalendarProps & ContainerProps & {
                     <div className={classNames("react-datetime-pickers-body")}>
                         <TimePickerGrid
                             selected={selected}
-                            onChange={setDate}
+                            setDate={setDate}
                             helper={helper}
                             step={timeStep}
                         />
@@ -340,8 +340,8 @@ const Calendar: React.FC<CalendarProps & ContainerProps & {
                     </div>
                     <div className={classNames("react-datetime-pickers-body")}>
                         <div className={classNames("react-datetime-pickers-months")}>
-                            {months.map((rows) => (
-                                <div className={classNames("react-datetime-pickers-row")}>
+                            {months.map((rows, index) => (
+                                <div key={index} className={classNames("react-datetime-pickers-row")}>
                                     {rows.map((month, index) => (
                                         <button
                                             type="button"
@@ -451,8 +451,8 @@ const Calendar: React.FC<CalendarProps & ContainerProps & {
                     </div>
                     <div className={classNames("react-datetime-pickers-body")}>
                         <div className={classNames("react-datetime-pickers-years")}>
-                            {years.map((rows) => (
-                                <div className={classNames("react-datetime-pickers-row")}>
+                            {years.map((rows, index) => (
+                                <div key={index} className={classNames("react-datetime-pickers-row")}>
                                     {rows.map((year, index) => (
                                         <button
                                             type="button"

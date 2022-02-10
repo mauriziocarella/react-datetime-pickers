@@ -1,17 +1,14 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react'
-import classNames from 'classnames'
+import React, {useCallback, useEffect, useRef, useState} from "react"
+import classNames from "classnames"
 
 import {useDidMountEffect} from "../helper/hooks";
 
-import Input from './Input';
+import Input from "./Input";
 import {DateTimePickerProps} from "../index";
 import Calendar, {CalendarProps} from "./Calendar";
 
-
 export interface ContainerProps extends DateTimePickerProps {
     formatter?: (date?: Date, showTime?: boolean) => string,
-    firstDayOfWeek?: number,
-    closeOnSelect?: boolean,
     disabled?: boolean,
     readOnly?: boolean,
 }
@@ -48,6 +45,7 @@ export const Container: React.FC<ContainerProps & {
     }, [minDate, maxDate]);
 
     useDidMountEffect(() => {
+        console.log("selected changed", closeOnSelect)
         if (typeof props.onChange === "function") {
             props.onChange(selected)
         }
@@ -64,10 +62,10 @@ export const Container: React.FC<ContainerProps & {
             }
         }
 
-        document.addEventListener('click', onClick, {capture: true})
+        document.addEventListener("click", onClick, {capture: true})
 
         return () => {
-            document.removeEventListener('click', onClick, {capture: true})
+            document.removeEventListener("click", onClick, {capture: true})
         }
     }, []);
 

@@ -2,16 +2,23 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import classNames from "classnames";
 import {IconArrowDown, IconArrowUp} from "./icons/Icons";
 import Helper from "../Helper";
-import {ContainerProps} from "./Container";
+import {DateTimePickerProps} from "../index";
 
-export type TimePickerGridProps = {
+export interface TimePickerGridProps extends DateTimePickerProps {
     selected?: Date,
-    onChange: (date: Date) => void,
-    helper: ReturnType<typeof Helper>,
+    helper?: ReturnType<typeof Helper>,
     step?: number,
 }
-export const TimePickerGrid: React.FC<TimePickerGridProps> = ({selected: _selected, onChange, helper, step = 15000}) => {
+export const TimePickerGrid: React.VFC<TimePickerGridProps & {
+    setDate: (date?: Date) => void,
+}> = ({selected: _selected, setDate, helper: _helper, step = 1800, firstDayOfWeek}) => {
     const [selected, setSelected] = useState(_selected);
+
+    const helper = useMemo(() => {
+        if (_helper) return _helper;
+
+        return Helper(firstDayOfWeek)
+    }, [firstDayOfWeek, _helper])
 
     const times = useMemo(() => {
         const start = selected ? new Date(selected?.getTime()) : new Date();
@@ -36,7 +43,7 @@ export const TimePickerGrid: React.FC<TimePickerGridProps> = ({selected: _select
         if (!d) d = new Date()
         d.setHours(date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
 
-        onChange(d);
+        if (typeof setDate === "function") setDate(d);
     }, [selected]);
 
     const isSelectedTime = ({date}: {date: Date}) => {
@@ -67,7 +74,7 @@ export const TimePickerGrid: React.FC<TimePickerGridProps> = ({selected: _select
                     })}
                     onClick={handleClick(time)}
                 >
-                    {`${time.date.getHours()}`.padStart(2, '0')}:{`${time.date.getMinutes()}`.padStart(2, '0')}
+                    {`${time.date.getHours()}`.padStart(2, "0")}:{`${time.date.getMinutes()}`.padStart(2, "0")}
                 </button>
             ))}
         </div>
@@ -134,10 +141,10 @@ export const TimePickerScroller: React.FC<TimePickerScrollerProps> = ({selected,
     useEffect(() => {
         const onMouseUp = () => clearTimers();
 
-        document.addEventListener('mouseup', onMouseUp, {capture: true})
+        document.addEventListener("mouseup", onMouseUp, {capture: true})
 
         return () => {
-            document.removeEventListener('mouseup', onMouseUp, {capture: true})
+            document.removeEventListener("mouseup", onMouseUp, {capture: true})
         }
     }, [])
 
@@ -154,7 +161,7 @@ export const TimePickerScroller: React.FC<TimePickerScrollerProps> = ({selected,
                 </button>
                 <input
                     type="number"
-                    value={`${selected.getHours()}`.padStart(2, '0')}
+                    value={`${selected.getHours()}`.padStart(2, "0")}
                     onChange={handleHourChange}
                 />
                 <button
@@ -177,7 +184,7 @@ export const TimePickerScroller: React.FC<TimePickerScrollerProps> = ({selected,
                 </button>
                 <input
                     type="number"
-                    value={`${selected.getMinutes()}`.padStart(2, '0')}
+                    value={`${selected.getMinutes()}`.padStart(2, "0")}
                     onChange={handleMinuteChange}
                 />
                 <button
@@ -192,37 +199,3 @@ export const TimePickerScroller: React.FC<TimePickerScrollerProps> = ({selected,
         </div>
     )
 };
-
-type TimePickerProps = Pick<ContainerProps, "selected" | "firstDayOfWeek" | "minDate" | "maxDate"> & Pick<TimePickerGridProps, "step">
-export const TimePicker: React.VFC<TimePickerProps> = ({firstDayOfWeek, selected: _selected, minDate, maxDate, step}) => {
-    const [selected, setSelected] = useState(_selected);
-
-    const helper = useMemo(() => Helper(firstDayOfWeek), [firstDayOfWeek]);
-
-    const setDate = useCallback((date) => {
-        let d = new Date(date);
-
-        if (minDate && d < minDate) d = minDate;
-        if (maxDate && d > maxDate) d = maxDate;
-        setSelected(d);
-    }, [minDate, maxDate]);
-
-    useEffect(() => {
-        if (_selected) {
-            if (_selected.getTime() !== selected?.getTime()) {
-                setSelected(_selected)
-            }
-        }
-    }, [_selected])
-
-    return (
-        <div className={classNames("react-datetime-pickers-body")}>
-            <TimePickerGrid
-                selected={selected}
-                onChange={setDate}
-                helper={helper}
-                step={step}
-            />
-        </div>
-    );
-}
