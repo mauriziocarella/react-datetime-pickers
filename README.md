@@ -22,7 +22,7 @@ yarn install react-datetime-pickers
 ```jsx
 import React, {useState} from 'react';
 
-import DateTimePicker from 'react-datetime-pickers';
+import { DateTimePicker } from 'react-datetime-pickers';
 import 'react-datetime-pickers/dist/index.css';
 
 export default function Example() {

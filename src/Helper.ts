@@ -1,55 +1,55 @@
-const Helper = function (firstDayOfWeek: number = 1) {
-    let months = [
+const Helper = function (firstDayOfWeek = 1) {
+    const months = [
         {
             month: 0,
-            name: 'January'
+            name: "January"
         },
         {
             month: 1,
-            name: 'February'
+            name: "February"
         },
         {
             month: 2,
-            name: 'March'
+            name: "March"
         },
         {
             month: 3,
-            name: 'April'
+            name: "April"
         },
         {
             month: 4,
-            name: 'May'
+            name: "May"
         },
         {
             month: 5,
-            name: 'June'
+            name: "June"
         },
         {
             month: 6,
-            name: 'July'
+            name: "July"
         },
         {
             month: 7,
-            name: 'August'
+            name: "August"
         },
         {
             month: 8,
-            name: 'September'
+            name: "September"
         },
         {
             month: 9,
-            name: 'October'
+            name: "October"
         },
         {
             month: 10,
-            name: 'November'
+            name: "November"
         },
         {
             month: 11,
-            name: 'December'
+            name: "December"
         }
     ];
-    let dows = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    let dows = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
     dows = dows.concat(dows.splice(0, firstDayOfWeek));
 
@@ -85,31 +85,31 @@ const Helper = function (firstDayOfWeek: number = 1) {
         },
 
         dayStart(date: Date) {
-            let ret = new Date(date)
+            const ret = new Date(date)
             ret.setHours(0, 0, 0, 0)
             return ret
         },
         dayEnd(date: Date) {
-            let ret = new Date(date)
+            const ret = new Date(date)
             ret.setHours(23, 59, 59, 999)
             return ret
         },
 
         weekStart(date: Date) {
-            let ret = new Date(date)
+            const ret = new Date(date)
             while (ret.getDay() !== firstDayOfWeek) {
                 ret.setDate(ret.getDate() - 1);
             }
             return ret
         },
         weekEnd(date: Date) {
-            let ret = this.weekStart(date)
+            const ret = this.weekStart(date)
             ret.setDate(ret.getDate() + 6)
             ret.setHours(23, 59, 59, 999)
             return ret
         },
         monthStart(date: Date) {
-            let ret = new Date(date)
+            const ret = new Date(date)
             ret.setDate(1)
             return ret
         },
@@ -123,10 +123,20 @@ const Helper = function (firstDayOfWeek: number = 1) {
             return new Date(date.getFullYear(), 11, 31)
         },
 
-        getMonthWeeks(year: number, month: number) {
-            let lastDayOfMonth = (new Date(year, month + 1, 0))
+        isBefore(a: Date, b: Date) {
+            return a.getTime() <= b.getTime()
+        },
+        isAfter(a: Date, b: Date) {
+            return a.getTime() >= b.getTime()
+        },
+        isBetween(needle: Date, a: Date, b: Date) {
+            return this.isAfter(needle, a) && this.isBefore(needle, b)
+        },
 
-            let weeks = []
+        getMonthWeeks(year: number, month: number) {
+            const lastDayOfMonth = (new Date(year, month + 1, 0))
+
+            const weeks = []
 
             let date = new Date(year, month, 1)
             let week
@@ -138,7 +148,7 @@ const Helper = function (firstDayOfWeek: number = 1) {
                 }
 
                 for (let d = new Date(week.start); d.getTime() <= week.end.getTime(); d.setDate(d.getDate() + 1)) {
-                    let day = new Date(d)
+                    const day = new Date(d)
                     week.days.push({
                         date: day,
                         disabled: day.getMonth() !== month

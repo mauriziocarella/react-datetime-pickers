@@ -222,7 +222,7 @@ $secondary: #b319a6;
 
 			> * {
 				flex: 1;
-				margin: 0.1rem;
+				//margin: 0.1rem;
 			}
 		}
 
@@ -247,6 +247,12 @@ $secondary: #b319a6;
 				display: flex;
 				justify-content: space-between;
 				flex: 1;
+
+				> * {
+					padding: .05rem;
+					display: flex;
+					flex: 1;
+				}
 
 				&.selected {
 					.react-datetime-pickers-day {

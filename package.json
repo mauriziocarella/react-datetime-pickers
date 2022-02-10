@@ -1,13 +1,16 @@
 {
 	"name": "react-datetime-pickers",
 	"version": "1.0.37",
-	"description": "React ready picker components for dates and time (month picker, week picker, day picker)",
+	"description": "React ready picker components for dates and time (month picker, week picker, day picker, range picker)",
 	"keywords": [
 		"react",
 		"date",
 		"datetime",
 		"time",
-		"picker"
+		"picker",
+		"range-picker",
+		"range",
+		"timepicker"
 	],
 	"author": "mauriziocarella",
 	"license": "MIT",

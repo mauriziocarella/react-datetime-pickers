@@ -1,13 +1,13 @@
 import React, { useMemo, useState } from "react";
-import {DateTimePicker, DateTimePickerSelectorType} from "react-datetime-pickers"
+import {DateTimePicker, DateTimePickerSelectedType, DateTimePickerSelectorType} from "react-datetime-pickers"
 
 export const Example1: React.VFC<React.HTMLProps<HTMLDivElement>> = ({...props}) => {
-	const [selected, setSelected] = useState<Date>();
+	const [selected, setSelected] = useState<DateTimePickerSelectedType>();
 	const [selector, setSelector] = useState<DateTimePickerSelectorType>(DateTimePickerSelectorType.DAY);
 	const [showTimePicker, setShowTimePicker] = useState(true);
 	const [disabled, setDisabled] = useState(false);
 
-	const handleDateChange = (date?: Date) => {
+	const handleDateChange = (date?: DateTimePickerSelectedType) => {
 		console.debug("DatePicker", "onChange", date);
 		setSelected(date);
 	};
@@ -37,7 +37,7 @@ export const Example1: React.VFC<React.HTMLProps<HTMLDivElement>> = ({...props})
 
 	return (
 		<div {...props}>
-			<h1>Example 1</h1>
+			<h1>Example</h1>
 			<div className="mb-2">
 				<label className="block">Selector</label>
 				<select onChange={handleSelectorChange} value={selector}>
@@ -79,6 +79,11 @@ export const Example1: React.VFC<React.HTMLProps<HTMLDivElement>> = ({...props})
 					disabled={disabled}
 					disabledDates={{
 						url: "/data/disabled-dates.json"
+					}}
+					formatter={(date) => {
+						if (date instanceof Date) return date.toISOString();
+						if (date instanceof Array) return date.map((d) => d?.toISOString()).join(" - ");
+						return "";
 					}}
 				/>
 			</div>

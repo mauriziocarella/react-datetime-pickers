@@ -5,7 +5,6 @@ import Helper from "../Helper";
 import {DateTimePickerProps} from "../index";
 
 export interface TimePickerGridProps extends DateTimePickerProps {
-    selected?: Date,
     helper?: ReturnType<typeof Helper>,
     step?: number,
 }
@@ -23,8 +22,8 @@ export const TimePickerGrid: React.VFC<TimePickerGridProps & {
     }, [firstDayOfWeek, _helper])
 
     const times = useMemo(() => {
-        const start = selected ? new Date(selected?.getTime()) : new Date();
-        const end = selected ? new Date(selected?.getTime()) : new Date();
+        const start = (selected && selected instanceof Date) ? new Date(selected?.getTime()) : new Date();
+        const end = (selected && selected instanceof Date) ? new Date(selected?.getTime()) : new Date();
 
         start.setHours(0, 0, 0, 0);
         end.setHours(23, 59, 59, 999);
@@ -41,7 +40,8 @@ export const TimePickerGrid: React.VFC<TimePickerGridProps & {
     }, []);
 
     const handleClick = useCallback(({date}) => () => {
-        let d = selected;
+        let d
+        if (selected instanceof Date) d = selected
         if (!d) d = new Date()
         d.setHours(date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
 
@@ -49,7 +49,7 @@ export const TimePickerGrid: React.VFC<TimePickerGridProps & {
     }, [selected]);
 
     const isSelectedTime = ({date}: {date: Date}) => {
-        if (selected) {
+        if (selected && selected instanceof Date) {
             return helper.isSameTimeAs(date, selected)
         }
 
@@ -57,7 +57,7 @@ export const TimePickerGrid: React.VFC<TimePickerGridProps & {
     }
 
     useEffect(() => {
-        if (_selected) {
+        if (_selected && _selected instanceof Date && (!selected || selected instanceof Date)) {
             if (_selected.getTime() !== selected?.getTime()) {
                 setSelected(_selected)
             }

@@ -1,17 +1,17 @@
 import React, { useState } from "react";
-import {TimePicker} from "react-datetime-pickers"
+import {TimePicker, DateTimePickerSelectedType} from "react-datetime-pickers"
 
 export const Example2: React.VFC<React.HTMLProps<HTMLDivElement>> = ({...props}) => {
-	const [selected, setSelected] = useState<Date>();
+	const [selected, setSelected] = useState<DateTimePickerSelectedType>();
 
-	const handleDateChange = (date?: Date) => {
+	const handleDateChange = (date?: DateTimePickerSelectedType) => {
 		console.debug("TimePicker", "onChange", date);
 		setSelected(date);
 	};
 
 	return (
 		<div {...props}>
-			<h1>Example 2</h1>
+			<h1>Time Picker</h1>
 			<div className="mb-2">
 				<TimePicker
 					selected={selected}

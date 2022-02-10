@@ -20,7 +20,7 @@
 	}
 
 	pre {
-		@apply bg-gray-200 border rounded p-6;
+		@apply bg-gray-200 border rounded p-6 break-all whitespace-pre-line;
 	}
 
 	h1 {
