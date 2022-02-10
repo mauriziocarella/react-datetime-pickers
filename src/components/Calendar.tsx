@@ -265,28 +265,36 @@ const Calendar: React.FC<CalendarProps & ContainerProps & {
         }
 
         case DateTimePickerSelectorType.MONTH: {
-            const months = helper.months.map((_month) => {
-                const month = {
-                    ..._month,
-                    date: new Date(year, _month.month, 1),
-                    disabled: false,
-                }
-
-                if (minDate && helper.monthEnd(month.date) < minDate) {
-                    month.disabled = true
-                }
-                if (maxDate && month.date > maxDate) {
-                    month.disabled = true
-                }
-
-                if (!month.disabled) {
-                    if (selector === "month") {
-                        month.disabled = disabledDates.some((d) => helper.isSameMonthAs(month.date, d))
+            const months =
+                helper.months.map((_month) => {
+                    const month = {
+                        ..._month,
+                        date: new Date(year, _month.month, 1),
+                        disabled: false,
                     }
-                }
 
-                return month;
-            })
+                    if (minDate && helper.monthEnd(month.date) < minDate) {
+                        month.disabled = true
+                    }
+                    if (maxDate && month.date > maxDate) {
+                        month.disabled = true
+                    }
+
+                    if (!month.disabled) {
+                        if (selector === "month") {
+                            month.disabled = disabledDates.some((d) => helper.isSameMonthAs(month.date, d))
+                        }
+                    }
+
+                    return month
+                })
+                .reduce((rows: Array<Array<typeof helper.months[number] & {date: Date, disabled: boolean}>>, month) => {
+                    if (rows.length === 0 || rows[rows.length-1].length >= 3) rows.push([]);
+
+                    rows[rows.length-1].push(month)
+
+                    return rows;
+                }, [])
 
             const isSelectedMonth = ({ date }: { date: Date }) => {
                 if (selected) {
@@ -332,20 +340,24 @@ const Calendar: React.FC<CalendarProps & ContainerProps & {
                     </div>
                     <div className={classNames("react-datetime-pickers-body")}>
                         <div className={classNames("react-datetime-pickers-months")}>
-                            {months.map((month, index) => (
-                                <button
-                                    type="button"
-                                    className={classNames("react-datetime-pickers-month", {
-                                        disabled: month.disabled,
-                                        selected: isSelectedMonth(month),
-                                        today: isTodayMonth(month)
-                                    })}
-                                    key={index}
-                                    onClick={() => onMonthClick(month)}
-                                    disabled={month.disabled}
-                                >
-                                    {month.name}
-                                </button>
+                            {months.map((rows) => (
+                                <div className={classNames("react-datetime-pickers-row")}>
+                                    {rows.map((month, index) => (
+                                        <button
+                                            type="button"
+                                            className={classNames("react-datetime-pickers-month", {
+                                                disabled: month.disabled,
+                                                selected: isSelectedMonth(month),
+                                                today: isTodayMonth(month)
+                                            })}
+                                            key={index}
+                                            onClick={() => onMonthClick(month)}
+                                            disabled={month.disabled}
+                                        >
+                                            {month.name}
+                                        </button>
+                                    ))}
+                                </div>
                             ))}
                         </div>
                     </div>
@@ -361,7 +373,7 @@ const Calendar: React.FC<CalendarProps & ContainerProps & {
         }
 
         case DateTimePickerSelectorType.YEAR: {
-            const years = []
+            let years = []
             for (let i = year - 7; i <= year + 7; i++) {
                 const year = {
                     year: i,
@@ -384,6 +396,15 @@ const Calendar: React.FC<CalendarProps & ContainerProps & {
 
                 years.push(year)
             }
+
+            years = years
+                .reduce((rows: Array<Array<{year: number, date: Date, disabled: boolean}>>, year) => {
+                    if (rows.length === 0 || rows[rows.length-1].length >= 3) rows.push([]);
+
+                    rows[rows.length-1].push(year)
+
+                    return rows;
+                }, [])
 
             const isSelectedYear = ({ date }: { date: Date }) => {
                 if (selected) {
@@ -430,20 +451,24 @@ const Calendar: React.FC<CalendarProps & ContainerProps & {
                     </div>
                     <div className={classNames("react-datetime-pickers-body")}>
                         <div className={classNames("react-datetime-pickers-years")}>
-                            {years.map((year, index) => (
-                                <button
-                                    type="button"
-                                    className={classNames("react-datetime-pickers-year", {
-                                        disabled: year.disabled,
-                                        selected: isSelectedYear(year),
-                                        today: isTodayYear(year)
-                                    })}
-                                    key={index}
-                                    onClick={() => onYearClick(year)}
-                                    disabled={year.disabled}
-                                >
-                                    {year.year}
-                                </button>
+                            {years.map((rows) => (
+                                <div className={classNames("react-datetime-pickers-row")}>
+                                    {rows.map((year, index) => (
+                                        <button
+                                            type="button"
+                                            className={classNames("react-datetime-pickers-year", {
+                                                disabled: year.disabled,
+                                                selected: isSelectedYear(year),
+                                                today: isTodayYear(year)
+                                            })}
+                                            key={index}
+                                            onClick={() => onYearClick(year)}
+                                            disabled={year.disabled}
+                                        >
+                                            {year.year}
+                                        </button>
+                                    ))}
+                                </div>
                             ))}
                         </div>
                     </div>

@@ -32,7 +32,7 @@ const App: React.VFC = () => {
 		const minDate = new Date();
 		const maxDate = new Date();
 
-		minDate.setDate(minDate.getDate() - 40)
+		minDate.setDate(minDate.getDate() - 90)
 		maxDate.setDate(maxDate.getDate() + 7)
 
 		return {

@@ -115,12 +115,7 @@ $secondary: #b319a6;
 		padding: 25px 30px;
 
 		* {
-			-webkit-touch-callout: none; /* iOS Safari */
-			-webkit-user-select: none;   /* Chrome/Safari/Opera */
-			-khtml-user-select: none;    /* Konqueror */
-			-moz-user-select: none;      /* Firefox */
-			-ms-user-select: none;       /* Internet Explorer/Edge */
-			user-select: none;           /* Non-prefixed version, currently */
+			user-select: none;
 		}
 
 		input {
@@ -156,13 +151,13 @@ $secondary: #b319a6;
 
 			@keyframes react-datetime-pickers-animation-spin {
 				to {
-					-webkit-transform: rotate(-360deg);
+					transform: rotate(-360deg);
 				}
 			}
 
 			@-webkit-keyframes react-datetime-pickers-animation-spin {
 				to {
-					-webkit-transform: rotate(-360deg);
+					transform: rotate(-360deg);
 				}
 			}
 		}
@@ -221,6 +216,15 @@ $secondary: #b319a6;
 		flex-direction: column;
 		position: relative;
 
+		.react-datetime-pickers-row {
+			display: flex;
+
+			> * {
+				flex: 1;
+				margin: 0.1rem;
+			}
+		}
+
 		.react-datetime-pickers-week-days {
 			display: flex;
 			align-items: center;
@@ -272,8 +276,12 @@ $secondary: #b319a6;
 		.react-datetime-pickers-months {
 			display: flex;
 			flex-wrap: wrap;
+			flex-direction: column;
 			flex: 1;
 
+			> .react-datetime-pickers-row {
+				flex-grow: 1;
+			}
 			.react-datetime-pickers-month {
 				display: flex;
 				align-items: center;
@@ -296,7 +304,12 @@ $secondary: #b319a6;
 		.react-datetime-pickers-years {
 			display: flex;
 			flex-wrap: wrap;
+			flex-direction: column;
 			flex: 1;
+
+			> .react-datetime-pickers-row {
+				flex-grow: 1;
+			}
 
 			.react-datetime-pickers-year {
 				display: flex;
@@ -304,7 +317,7 @@ $secondary: #b319a6;
 				justify-content: center;
 				flex-basis: 33%;
 
-
+				border-radius: .5rem;
 
 				@include button(#ffffff);
 
