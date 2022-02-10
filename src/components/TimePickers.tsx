@@ -10,9 +10,11 @@ export interface TimePickerGridProps extends DateTimePickerProps {
     step?: number,
 }
 export const TimePickerGrid: React.VFC<TimePickerGridProps & {
+    open: boolean,
     setDate: (date?: Date) => void,
-}> = ({selected: _selected, setDate, helper: _helper, step = 1800, firstDayOfWeek}) => {
+}> = ({open, selected: _selected, setDate, helper: _helper, step = 1800, firstDayOfWeek}) => {
     const [selected, setSelected] = useState(_selected);
+    const container = useRef<HTMLDivElement>(null);
 
     const helper = useMemo(() => {
         if (_helper) return _helper;
@@ -62,8 +64,20 @@ export const TimePickerGrid: React.VFC<TimePickerGridProps & {
         }
     }, [_selected])
 
+    useEffect(() => {
+        if (open && container.current) {
+            const target = container.current.querySelector(".selected")
+
+            if (target) {
+                target.scrollIntoView({
+                    block: "center"
+                })
+            }
+        }
+    }, [open])
+
     return (
-        <div className="react-datetime-pickers-times">
+        <div ref={container} className="react-datetime-pickers-times">
             {times.map((time, index) => (
                 <button
                     key={`time-${index}`}

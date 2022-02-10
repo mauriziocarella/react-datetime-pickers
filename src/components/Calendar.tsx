@@ -135,6 +135,7 @@ const Calendar: React.FC<CalendarProps & ContainerProps & {
                     {loading && <Loading/>}
                     <div className={classNames("react-datetime-pickers-body")}>
                         <TimePickerGrid
+                            open={open}
                             selected={selected}
                             setDate={setDate}
                             helper={helper}

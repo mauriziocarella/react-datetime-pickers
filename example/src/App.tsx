@@ -115,9 +115,9 @@ const Example2: React.VFC<React.HTMLProps<HTMLDivElement>> = ({...props}) => {
 
 const App: React.VFC = () => {
 	return (
-		<div className="flex">
-			<Example1 className="grow"/>
-			<Example2 className="grow"/>
+		<div className="flex flex-col md:flex-row">
+			<Example1 className="basis-1/2 mb-2"/>
+			<Example2 className="basis-1/2 mb-2"/>
 		</div>
 	)
 }
