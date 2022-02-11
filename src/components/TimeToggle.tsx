@@ -17,7 +17,7 @@ const TimeToggle: React.FC<TimeToggleProps> = ({timePicker, timeOpen, toggleTime
             className={classNames("react-datetime-pickers-button react-datetime-pickers-time-toggle react-datetime-pickers-button-outline")}
             onClick={toggleTime}
         >
-            {timeOpen ? <IconCalendar/> : <IconClock/>}
+            {timeOpen ? <IconCalendar size="sm"/> : <IconClock size="sm"/>}
         </button>
     )
 };
