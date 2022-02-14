@@ -68,10 +68,8 @@ export const TimePickerGrid: React.VFC<TimePickerGridProps & {
         if (open && container.current) {
             const target = container.current.querySelector(".selected")
 
-            if (target) {
-                target.scrollIntoView({
-                    block: "center"
-                })
+            if (target && target instanceof HTMLElement) {
+                container.current.scrollTop = target.offsetTop - (container.current.clientHeight / 2);
             }
         }
     }, [open])
