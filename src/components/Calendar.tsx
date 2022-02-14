@@ -153,6 +153,8 @@ const Calendar: React.FC<CalendarProps & ContainerProps & {
                             setDate={setDate}
                             helper={helper}
                             step={timeStep}
+                            minDate={minDate}
+                            maxDate={maxDate}
                         />
                     </div>
                     <div className={classNames("react-datetime-pickers-footer")}>
