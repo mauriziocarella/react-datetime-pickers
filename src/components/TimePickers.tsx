@@ -11,7 +11,16 @@ export interface TimePickerGridProps extends DateTimePickerProps {
 export const TimePickerGrid: React.VFC<TimePickerGridProps & {
     open: boolean,
     setDate: (date?: Date) => void,
-}> = ({open, selected: _selected, setDate, helper: _helper, step = 1800, firstDayOfWeek}) => {
+}> = ({
+    open,
+    selected: _selected,
+    setDate,
+    helper: _helper,
+    step = 1800,
+    firstDayOfWeek,
+    minDate,
+    maxDate,
+}) => {
     const [selected, setSelected] = useState(_selected);
     const container = useRef<HTMLDivElement>(null);
 
@@ -30,10 +39,19 @@ export const TimePickerGrid: React.VFC<TimePickerGridProps & {
 
         const times = [];
         for (let m = start.getTime(); m < end.getTime(); m += (step * 1000)) {
-            times.push({
+            const time = {
                 date: new Date(m),
                 disabled: false,
-            });
+            };
+
+            if (minDate && helper.isBefore(time.date, minDate)) {
+                time.disabled = true;
+            }
+            else if (maxDate && helper.isAfter(time.date, maxDate)) {
+                time.disabled = true;
+            }
+
+            times.push(time);
         }
 
         return times;
@@ -85,6 +103,7 @@ export const TimePickerGrid: React.VFC<TimePickerGridProps & {
                         selected: isSelectedTime(time),
                     })}
                     onClick={handleClick(time)}
+                    disabled={time.disabled}
                 >
                     {`${time.date.getHours()}`.padStart(2, "0")}:{`${time.date.getMinutes()}`.padStart(2, "0")}
                 </button>
